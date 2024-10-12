@@ -7,10 +7,20 @@ const buttondisplay = ref(new Date())
 const currentWeekOffset = ref(0)
 
 const getStartOfWeek = (date) => {
-  const startOfWeek = new Date(date)
-  const dayOfWeek = startOfWeek.getDay() || 7
-  startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek + 1)
-  return startOfWeek
+  const weekDate = new Date(date)
+  const dayOfWeek = weekDate.getDay() || 7
+  weekDate.setHours(0, 0, 0, 0)
+  const difference = weekDate.getDate() - dayOfWeek + 1
+  return new Date(weekDate.setDate(difference))
+}
+
+//            <router-link :to="`/day/${formatDate(day.dayFormat)}`">
+
+const formatDate = (date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 const calculateWeekDays = (offset) => {
@@ -23,7 +33,7 @@ const calculateWeekDays = (offset) => {
     return {
       dayOfTheWeek: day.toLocaleString('default', { weekday: 'long' }),
       monthAndDay: day.toLocaleString('default', { day: 'numeric', month: 'short' }),
-      dayFormat: day
+      dayFormat: new Date(day)
     }
   })
 }
@@ -37,11 +47,15 @@ const normalizedDisplayDate = computed(() => {
 })
 
 watch(buttondisplay, (newDate) => {
-  const diffWeeks = Math.round(
-    (getStartOfWeek(newDate) - getStartOfWeek(new Date())) / (1000 * 60 * 60 * 24 * 7)
-  )
+  const startOfCurrWeek = getStartOfWeek(new Date())
+  const startOfNewWeek = getStartOfWeek(newDate)
+  const diffWeeks = Math.round((startOfNewWeek - startOfCurrWeek) / (1000 * 60 * 60 * 24 * 7))
   currentWeekOffset.value = diffWeeks
 })
+
+const selectDate = (date) => {
+  buttondisplay.value = new Date(date)
+}
 </script>
 
 <template>
@@ -55,23 +69,23 @@ watch(buttondisplay, (newDate) => {
     </div>
 
     <div class="p-20 w-3/4">
-      <div class="flex justify-end">
+      <div class="flex justify-end mb-4">
         <Calendar v-model="buttondisplay" showIcon :showOnFocus="false" />
       </div>
 
-      <div class="py-4 gap-2 font-medium mb-4 flex justify-end">
+      <div class="py-4 gap-2 font-medium flex justify-end">
         <Button icon="pi pi-angle-left" @click="currentWeekOffset--" />
         <div class="gap-2 flex overflow-x-auto">
           <div v-for="(day, index) in days" :key="index" class="whitespace-pre-wrap">
-            <Button
-              :label="`${day.dayOfTheWeek},\n${day.monthAndDay}`"
-              :severity="
-                new Date(day.dayFormat).setHours(0, 0, 0, 0) === normalizedDisplayDate.getTime()
-                  ? 'info'
-                  : 'secondary'
-              "
-              @click="buttondisplay = new Date(day.dayFormat)"
-            />
+            <router-link :to="home">
+              <Button
+                :label="`${day.dayOfTheWeek},\n${day.monthAndDay}`"
+                :severity="
+                  day.dayFormat.getTime() === normalizedDisplayDate.getTime() ? 'info' : 'secondary'
+                "
+                @click="selectDate(day.dayFormat)"
+              />
+            </router-link>
           </div>
         </div>
         <Button icon="pi pi-angle-right" @click="currentWeekOffset++" />
