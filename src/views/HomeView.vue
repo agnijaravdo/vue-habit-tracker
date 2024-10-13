@@ -2,10 +2,11 @@
 import { ref, computed, watch } from 'vue'
 import Button from 'primevue/button'
 import Calendar from 'primevue/calendar'
-import DataTable from 'primevue/datatable'
+import Checkbox from 'primevue/checkbox'
 import Column from 'primevue/column'
-import InputText from 'primevue/inputtext'
+import DataTable from 'primevue/datatable'
 import InputGroup from 'primevue/inputgroup'
+import InputText from 'primevue/inputtext'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -72,15 +73,15 @@ const selectDate = (date) => {
   buttondisplay.value = new Date(date)
 }
 
-let nextHabitId = 5
-
 const habits = ref([
   { id: 1, name: '🏃‍♂️ Exercise' },
   { id: 2, name: '📖 Read' },
   { id: 3, name: '🧘 Meditate' },
   { id: 4, name: '✍️ Write' }
 ])
+
 const newHabit = ref('')
+let nextHabitId = 5
 
 const deleteHabit = (id) => {
   habits.value = habits.value.filter((h) => h.id !== id)
@@ -127,7 +128,7 @@ const addNewHabit = () => {
         <Calendar v-model="buttondisplay" showIcon :showOnFocus="false" />
       </div>
 
-      <div class="py-4 gap-2 font-medium flex justify-end">
+      <div class="py-4 gap-2 font-medium flex justify-center">
         <Button icon="pi pi-angle-left" @click="currentWeekOffset--" />
         <div class="gap-2 flex overflow-x-auto">
           <div v-for="(day, index) in days" :key="index" class="whitespace-pre-wrap">
@@ -141,6 +142,14 @@ const addNewHabit = () => {
           </div>
         </div>
         <Button icon="pi pi-angle-right" @click="currentWeekOffset++" />
+      </div>
+      <div class="flex justify-center items-start">
+        <div class="gap-2 border border-gray-200 p-4">
+          <div v-for="habit of habits" :key="habit.id">
+            <Checkbox name="habit" :value="habit.name" />
+            <label :for="habit.id">{{ habit.name }}</label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
