@@ -2,8 +2,14 @@
 import { ref, computed, watch } from 'vue'
 import Button from 'primevue/button'
 import Calendar from 'primevue/calendar'
+import { useRoute, useRouter } from 'vue-router'
 
-const buttondisplay = ref(new Date())
+const route = useRoute()
+const router = useRouter()
+const paramsDay = route.params.day
+
+const dayToDisplay = paramsDay ? new Date(paramsDay) : new Date()
+const buttondisplay = ref(dayToDisplay)
 const currentWeekOffset = ref(0)
 
 const getStartOfWeek = (date) => {
@@ -13,8 +19,6 @@ const getStartOfWeek = (date) => {
   const difference = weekDate.getDate() - dayOfWeek + 1
   return new Date(weekDate.setDate(difference))
 }
-
-//            <router-link :to="`/day/${formatDate(day.dayFormat)}`">
 
 const formatDate = (date) => {
   const year = date.getFullYear()
@@ -46,12 +50,17 @@ const normalizedDisplayDate = computed(() => {
   return normalizedDate
 })
 
-watch(buttondisplay, (newDate) => {
-  const startOfCurrWeek = getStartOfWeek(new Date())
-  const startOfNewWeek = getStartOfWeek(newDate)
-  const diffWeeks = Math.round((startOfNewWeek - startOfCurrWeek) / (1000 * 60 * 60 * 24 * 7))
-  currentWeekOffset.value = diffWeeks
-})
+watch(
+  buttondisplay,
+  (newDate) => {
+    const startOfCurrWeek = getStartOfWeek(new Date())
+    const startOfNewWeek = getStartOfWeek(newDate)
+    const diffWeeks = Math.round((startOfNewWeek - startOfCurrWeek) / (1000 * 60 * 60 * 24 * 7))
+    currentWeekOffset.value = diffWeeks
+    router.push({ name: 'day', params: { day: formatDate(newDate) } })
+  },
+  { immediate: true }
+)
 
 const selectDate = (date) => {
   buttondisplay.value = new Date(date)
@@ -77,15 +86,13 @@ const selectDate = (date) => {
         <Button icon="pi pi-angle-left" @click="currentWeekOffset--" />
         <div class="gap-2 flex overflow-x-auto">
           <div v-for="(day, index) in days" :key="index" class="whitespace-pre-wrap">
-            <router-link :to="home">
-              <Button
-                :label="`${day.dayOfTheWeek},\n${day.monthAndDay}`"
-                :severity="
-                  day.dayFormat.getTime() === normalizedDisplayDate.getTime() ? 'info' : 'secondary'
-                "
-                @click="selectDate(day.dayFormat)"
-              />
-            </router-link>
+            <Button
+              :label="`${day.dayOfTheWeek},\n${day.monthAndDay}`"
+              :severity="
+                day.dayFormat.getTime() === normalizedDisplayDate.getTime() ? 'info' : 'secondary'
+              "
+              @click="selectDate(day.dayFormat)"
+            />
           </div>
         </div>
         <Button icon="pi pi-angle-right" @click="currentWeekOffset++" />
