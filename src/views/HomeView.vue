@@ -6,10 +6,15 @@ import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
-const paramsDay = route.params.day
 
-const dayToDisplay = paramsDay ? new Date(paramsDay) : new Date()
-const buttondisplay = ref(dayToDisplay)
+const isValidDate = (dateString) => {
+  const date = new Date(dateString)
+  return !Number.isNaN(date.getTime())
+}
+
+const paramsDay = isValidDate(route.params.day) ? new Date(route.params.day) : null
+
+const buttondisplay = ref(paramsDay || new Date())
 const currentWeekOffset = ref(0)
 
 const getStartOfWeek = (date) => {
@@ -28,9 +33,8 @@ const formatDate = (date) => {
 }
 
 const calculateWeekDays = (offset) => {
-  const startOfWeek = getStartOfWeek(new Date())
+  const startOfWeek = getStartOfWeek(paramsDay ? buttondisplay.value : new Date())
   startOfWeek.setDate(startOfWeek.getDate() + offset * 7)
-
   return Array.from({ length: 7 }, (_, i) => {
     const day = new Date(startOfWeek)
     day.setDate(startOfWeek.getDate() + i)
@@ -50,17 +54,15 @@ const normalizedDisplayDate = computed(() => {
   return normalizedDate
 })
 
-watch(
-  buttondisplay,
-  (newDate) => {
+watch(buttondisplay, (newDate, oldDate) => {
+  if (newDate.getTime() !== oldDate.getTime()) {
     const startOfCurrWeek = getStartOfWeek(new Date())
     const startOfNewWeek = getStartOfWeek(newDate)
     const diffWeeks = Math.round((startOfNewWeek - startOfCurrWeek) / (1000 * 60 * 60 * 24 * 7))
     currentWeekOffset.value = diffWeeks
     router.push({ name: 'day', params: { day: formatDate(newDate) } })
-  },
-  { immediate: true }
-)
+  }
+})
 
 const selectDate = (date) => {
   buttondisplay.value = new Date(date)
