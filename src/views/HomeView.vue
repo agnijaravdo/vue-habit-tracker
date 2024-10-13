@@ -2,6 +2,10 @@
 import { ref, computed, watch } from 'vue'
 import Button from 'primevue/button'
 import Calendar from 'primevue/calendar'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import InputText from 'primevue/inputtext'
+import InputGroup from 'primevue/inputgroup'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -67,16 +71,55 @@ watch(buttondisplay, (newDate, oldDate) => {
 const selectDate = (date) => {
   buttondisplay.value = new Date(date)
 }
+
+let nextHabitId = 5
+
+const habits = ref([
+  { id: 1, name: '🏃‍♂️ Exercise' },
+  { id: 2, name: '📖 Read' },
+  { id: 3, name: '🧘 Meditate' },
+  { id: 4, name: '✍️ Write' }
+])
+const newHabit = ref('')
+
+const deleteHabit = (id) => {
+  habits.value = habits.value.filter((h) => h.id !== id)
+}
+
+const addNewHabit = () => {
+  if (newHabit.value) {
+    habits.value.push({
+      id: (nextHabitId += 1),
+      name: newHabit.value
+    })
+    newHabit.value = ''
+  }
+}
 </script>
 
 <template>
   <div class="flex h-screen">
-    <div class="p-10 w-1/4">
-      <div class="font-medium mb-4">Overall Habits List:</div>
-      <ul class="list-disc pl-6">
-        <li>Drink Water</li>
-        <li>Exercise</li>
-      </ul>
+    <div class="p-20 w-1/4">
+      <h1 class="text-2xl font-bold">Habits</h1>
+      <DataTable :value="habits" tableStyle="min-width: 5rem">
+        <Column field="name"></Column>
+        <Column class="!text-end">
+          <template #body="{ data }">
+            <Button icon="pi pi-trash" @click="deleteHabit(data.id)" severity="secondary"></Button>
+          </template>
+        </Column>
+      </DataTable>
+      <div class="mt-4">
+        <InputGroup v-on:submit.prevent="addNewHabit">
+          <InputText
+            v-model="newHabit"
+            id="new-habit"
+            placeholder="Enter New Habit"
+            v-on:keyup.enter="addNewHabit"
+          />
+          <Button icon="pi pi-plus" severity="success" @click="addNewHabit" />
+        </InputGroup>
+      </div>
     </div>
 
     <div class="p-20 w-3/4">
