@@ -99,23 +99,24 @@ const addNewHabit = () => {
 </script>
 
 <template>
-  <div class="flex h-screen">
-    <div class="p-20 w-1/4">
-      <h1 class="text-2xl font-bold">Habits</h1>
+  <div class="flex flex-col md:flex-row h-screen overflow-hidden">
+    <div class="p-5 md:p-10 w-full md:w-1/4 md:border-r border-gray-200">
+      <h1 class="text-2xl font-bold mb-4">Tracked Habits</h1>
       <DataTable :value="habits" tableStyle="min-width: 5rem">
         <Column field="name"></Column>
-        <Column class="!text-end">
+        <Column class="!text-right">
           <template #body="{ data }">
             <Button icon="pi pi-trash" @click="deleteHabit(data.id)" severity="secondary"></Button>
           </template>
         </Column>
       </DataTable>
       <div class="mt-4">
-        <InputGroup v-on:submit.prevent="addNewHabit">
+        <InputGroup class="flex items-center">
           <InputText
             v-model="newHabit"
             id="new-habit"
             placeholder="Enter New Habit"
+            class="flex-1"
             v-on:keyup.enter="addNewHabit"
           />
           <Button icon="pi pi-plus" severity="success" @click="addNewHabit" />
@@ -123,17 +124,17 @@ const addNewHabit = () => {
       </div>
     </div>
 
-    <div class="p-20 w-3/4">
-      <div class="flex justify-end mb-4">
+    <div class="p-5 md:p-10 w-full md:w-3/4">
+      <div class="flex justify-start mb-4">
         <Calendar v-model="buttondisplay" showIcon :showOnFocus="false" />
       </div>
 
-      <div class="py-4 gap-2 font-medium flex justify-center">
+      <div class="py-4 gap-4 font-medium flex items-center justify-start">
         <Button icon="pi pi-angle-left" @click="currentWeekOffset--" />
         <div class="gap-2 flex overflow-x-auto">
-          <div v-for="(day, index) in days" :key="index" class="whitespace-pre-wrap">
+          <div v-for="(day, index) in days" :key="index" class="whitespace-pre">
             <Button
-              :label="`${day.dayOfTheWeek},\n${day.monthAndDay}`"
+              :label="`${day.dayOfTheWeek}, ${day.monthAndDay}`"
               :severity="
                 day.dayFormat.getTime() === normalizedDisplayDate.getTime() ? 'info' : 'secondary'
               "
@@ -143,12 +144,15 @@ const addNewHabit = () => {
         </div>
         <Button icon="pi pi-angle-right" @click="currentWeekOffset++" />
       </div>
-      <div class="flex justify-center items-start">
-        <div class="gap-2 border border-gray-200 p-4">
-          <div v-for="habit of habits" :key="habit.id">
-            <Checkbox name="habit" :value="habit.name" />
-            <label :for="habit.id">{{ habit.name }}</label>
-          </div>
+
+      <div class="flex flex-col gap-2">
+        <div
+          class="border border-gray-200 rounded p-4 flex items-center"
+          v-for="habit of habits"
+          :key="habit.id"
+        >
+          <Checkbox :name="habit.name" :value="habit.name" class="mr-2" />
+          <label :for="habit.id" class="cursor-pointer">{{ habit.name }}</label>
         </div>
       </div>
     </div>
