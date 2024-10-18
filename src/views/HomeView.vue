@@ -7,6 +7,8 @@ import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import InputGroup from 'primevue/inputgroup'
 import InputText from 'primevue/inputtext'
+import Drawer from 'primevue/drawer'
+import Knob from 'primevue/knob'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -17,10 +19,13 @@ const isValidDate = (dateString) => {
   return !Number.isNaN(date.getTime())
 }
 
+const currentWeekOffset = ref(0)
+const drawerVisible = ref(false)
+const knobValue = ref(60) // tmp value
+
 const paramsDay = isValidDate(route.params.day) ? new Date(route.params.day) : null
 
 const buttondisplay = ref(paramsDay || new Date())
-const currentWeekOffset = ref(0)
 
 const getStartOfWeek = (date) => {
   const weekDate = new Date(date)
@@ -109,14 +114,32 @@ const isSelectedDayAFutureDate = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row h-screen overflow-hidden">
-    <div class="p-5 md:p-10 w-full md:w-1/4 md:border-r border-gray-200">
-      <h1 class="text-2xl font-bold mb-4">Tracked Habits</h1>
-      <DataTable :value="habits" tableStyle="min-width: 5rem">
+  <div class="flex flex-col h-screen overflow-hidden">
+    <div class="flex justify-between items-center p-4 bg-gray-100 border-b">
+      <h1 class="text-xl font-bold">Habit Hack</h1>
+      <Button
+        label="Show and update habits list"
+        icon="pi pi-arrow-left"
+        @click="drawerVisible = true"
+      />
+    </div>
+
+    <Drawer v-model:visible="drawerVisible" position="right">
+      <template #header>
+        <div class="flex justify-between items-center p-2">
+          <h1 class="text-2xl font-bold">Tracked Habits</h1>
+        </div>
+      </template>
+      <DataTable :value="habits" class="mt-1">
         <Column field="name"></Column>
         <Column class="!text-right">
           <template #body="{ data }">
-            <Button icon="pi pi-trash" @click="deleteHabit(data.id)" severity="secondary"></Button>
+            <Button
+              icon="pi pi-trash"
+              @click="deleteHabit(data.id)"
+              severity="secondary"
+              class="p-button-text"
+            ></Button>
           </template>
         </Column>
       </DataTable>
@@ -132,47 +155,51 @@ const isSelectedDayAFutureDate = computed(() => {
           <Button icon="pi pi-plus" severity="success" @click="addNewHabit" />
         </InputGroup>
       </div>
-    </div>
+    </Drawer>
 
-    <div class="p-5 md:p-10 w-full md:w-3/4">
-      <div class="flex justify-start mb-4">
-        <Calendar v-model="buttondisplay" showIcon :showOnFocus="false" />
-      </div>
-
-      <div class="py-4 gap-4 font-medium flex items-center justify-start">
-        <Button icon="pi pi-angle-left" @click="currentWeekOffset--" />
-        <div class="gap-2 flex overflow-x-auto">
-          <div v-for="(day, index) in days" :key="index" class="whitespace-pre">
-            <Button
-              :label="`${day.dayOfTheWeek}, ${day.monthAndDay}`"
-              :severity="
-                day.dayFormat.getTime() === normalizedDisplayDate.getTime() ? 'info' : 'secondary'
-              "
-              @click="selectDate(day.dayFormat)"
-            />
-          </div>
+    <div class="flex-1 flex items-start justify-center p-10">
+      <div class="w-full max-w-7xl px-10">
+        <div class="flex justify-end mb-4">
+          <Calendar v-model="buttondisplay" showIcon :showOnFocus="false" />
         </div>
-        <Button icon="pi pi-angle-right" @click="currentWeekOffset++" />
-      </div>
 
-      <div v-if="isSelectedDayAFutureDate" class="text-center text-gray-500 p-10">
-        <i
-          class="pi pi-exclamation-circle animate-pulse text-[#FCDE70]"
-          style="font-size: 4rem"
-        ></i>
-        <p class="p-4">
-          You cannot track habits for future dates, please select a past or current date
-        </p>
-      </div>
+        <div class="py-4 gap-2 font-medium flex items-center justify-center">
+          <Button icon="pi pi-angle-left" @click="currentWeekOffset--" />
+          <div class="gap-2 flex overflow-x-auto">
+            <div v-for="(day, index) in days" :key="index" class="whitespace-pre">
+              <Button
+                :label="`${day.dayOfTheWeek}, ${day.monthAndDay}`"
+                :severity="
+                  day.dayFormat.getTime() === normalizedDisplayDate.getTime() ? 'info' : 'secondary'
+                "
+                @click="selectDate(day.dayFormat)"
+              />
+            </div>
+          </div>
+          <Button icon="pi pi-angle-right" @click="currentWeekOffset++" />
+        </div>
 
-      <div v-else class="flex flex-col gap-2">
-        <div
-          class="border border-gray-200 rounded p-4 flex items-center"
-          v-for="habit of habits"
-          :key="habit.id"
-        >
-          <Checkbox :name="habit.name" :value="habit.name" class="mr-2" />
-          <label :for="habit.id" class="cursor-pointer">{{ habit.name }}</label>
+        <div v-if="isSelectedDayAFutureDate" class="text-center text-gray-500 p-10">
+          <i
+            class="pi pi-exclamation-circle animate-pulse text-[#FCDE70]"
+            style="font-size: 4rem"
+          ></i>
+          <p class="p-4">
+            You cannot mark habits for future dates, please select a past or current date.
+          </p>
+        </div>
+
+        <div v-else class="flex flex-col gap-2">
+          <Knob v-model="knobValue" valueTemplate="{value}%" class="flex justify-center py-4" />
+
+          <div
+            class="border border-gray-200 rounded p-4 flex items-center"
+            v-for="habit of habits"
+            :key="habit.id"
+          >
+            <Checkbox :name="habit.name" :value="habit.name" class="mr-2" />
+            <label :for="habit.id" class="cursor-pointer">{{ habit.name }}</label>
+          </div>
         </div>
       </div>
     </div>

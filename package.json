@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@primevue/themes": "^4.1.0",
+    "@vueuse/core": "^11.1.0",
     "primeicons": "^7.0.0",
     "primevue": "^4.1.0",
     "vue": "^3.4.29",
