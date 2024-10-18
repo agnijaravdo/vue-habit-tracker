@@ -114,7 +114,7 @@ const isSelectedDayAFutureDate = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col h-screen overflow-hidden">
+  <div class="flex flex-col min-h-screen">
     <div class="flex justify-between items-center p-4 bg-gray-100 border-b">
       <h1 class="text-xl font-bold">Habit Hack</h1>
       <Button
@@ -157,8 +157,8 @@ const isSelectedDayAFutureDate = computed(() => {
       </div>
     </Drawer>
 
-    <div class="flex-1 flex items-start justify-center p-10">
-      <div class="w-full max-w-7xl px-10">
+    <div class="flex-1 overflow-y-auto p-10">
+      <div class="w-full max-w-7xl mx-auto px-10">
         <div class="flex justify-end mb-4">
           <Calendar v-model="buttondisplay" showIcon :showOnFocus="false" />
         </div>
@@ -189,19 +189,25 @@ const isSelectedDayAFutureDate = computed(() => {
           </p>
         </div>
 
-        <div v-else class="flex flex-col gap-2">
+        <div v-else>
           <Knob v-model="knobValue" valueTemplate="{value}%" class="flex justify-center py-4" />
 
-          <div
-            class="border border-gray-200 rounded p-4 flex items-center"
-            v-for="habit of habits"
-            :key="habit.id"
-          >
-            <Checkbox :name="habit.name" :value="habit.name" class="mr-2" />
-            <label :for="habit.id" class="cursor-pointer">{{ habit.name }}</label>
+          <div class="space-y-2">
+            <div
+              v-for="habit of habits"
+              :key="habit.id"
+              class="p-4 flex items-center border border-gray-200 rounded-md"
+            >
+              <Checkbox :name="habit.name" :value="habit.name" class="mr-2" />
+              <label :for="habit.id" class="cursor-pointer">{{ habit.name }}</label>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <footer class="bg-gray-100 p-4 text-center border-t">
+      <p class="text-sm text-gray-600">© 2024 Habit Hack</p>
+    </footer>
   </div>
 </template>
