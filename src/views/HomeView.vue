@@ -96,6 +96,16 @@ const addNewHabit = () => {
     newHabit.value = ''
   }
 }
+
+const isSelectedDayAFutureDate = computed(() => {
+  const today = new Date()
+  const selectedDate = new Date(buttondisplay.value)
+
+  today.setHours(0, 0, 0, 0)
+  selectedDate.setHours(0, 0, 0, 0)
+
+  return selectedDate > today
+})
 </script>
 
 <template>
@@ -145,7 +155,17 @@ const addNewHabit = () => {
         <Button icon="pi pi-angle-right" @click="currentWeekOffset++" />
       </div>
 
-      <div class="flex flex-col gap-2">
+      <div v-if="isSelectedDayAFutureDate" class="text-center text-gray-500 p-10">
+        <i
+          class="pi pi-exclamation-circle animate-pulse text-[#FCDE70]"
+          style="font-size: 4rem"
+        ></i>
+        <p class="p-4">
+          You cannot track habits for future dates, please select a past or current date
+        </p>
+      </div>
+
+      <div v-else class="flex flex-col gap-2">
         <div
           class="border border-gray-200 rounded p-4 flex items-center"
           v-for="habit of habits"
