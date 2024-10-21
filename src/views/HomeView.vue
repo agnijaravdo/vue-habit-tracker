@@ -3,14 +3,11 @@ import { ref, computed, watch } from 'vue'
 import Button from 'primevue/button'
 import Calendar from 'primevue/calendar'
 import Checkbox from 'primevue/checkbox'
-import Column from 'primevue/column'
-import DataTable from 'primevue/datatable'
-import InputGroup from 'primevue/inputgroup'
-import InputText from 'primevue/inputtext'
-import Drawer from 'primevue/drawer'
 import Knob from 'primevue/knob'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '../components/AppHeader.vue'
+import HabitDrawer from '../components/HabitDrawer.vue'
+import { getListOfHabits } from '../store/habits'
 
 const route = useRoute()
 const router = useRouter()
@@ -79,30 +76,6 @@ const selectDate = (date) => {
   buttondisplay.value = new Date(date)
 }
 
-const habits = ref([
-  { id: 1, name: '🏃‍♂️ Exercise' },
-  { id: 2, name: '📖 Read' },
-  { id: 3, name: '🧘 Meditate' },
-  { id: 4, name: '✍️ Write' }
-])
-
-const newHabit = ref('')
-let nextHabitId = 5
-
-const deleteHabit = (id) => {
-  habits.value = habits.value.filter((h) => h.id !== id)
-}
-
-const addNewHabit = () => {
-  if (newHabit.value) {
-    habits.value.push({
-      id: (nextHabitId += 1),
-      name: newHabit.value
-    })
-    newHabit.value = ''
-  }
-}
-
 const isSelectedDayAFutureDate = computed(() => {
   const today = new Date()
   const selectedDate = new Date(buttondisplay.value)
@@ -117,39 +90,7 @@ const isSelectedDayAFutureDate = computed(() => {
 <template>
   <div class="flex flex-col min-h-screen">
     <AppHeader @toggle-drawer="drawerVisible = !drawerVisible" />
-
-    <Drawer v-model:visible="drawerVisible" position="right">
-      <template #header>
-        <div class="flex justify-between items-center p-2">
-          <h1 class="text-2xl font-bold">Tracked Habits</h1>
-        </div>
-      </template>
-      <DataTable :value="habits" class="mt-1">
-        <Column field="name"></Column>
-        <Column class="!text-right">
-          <template #body="{ data }">
-            <Button
-              icon="pi pi-trash"
-              @click="deleteHabit(data.id)"
-              severity="secondary"
-              class="p-button-text"
-            ></Button>
-          </template>
-        </Column>
-      </DataTable>
-      <div class="mt-4">
-        <InputGroup class="flex items-center">
-          <InputText
-            v-model="newHabit"
-            id="new-habit"
-            placeholder="Enter New Habit"
-            class="flex-1"
-            v-on:keyup.enter="addNewHabit"
-          />
-          <Button icon="pi pi-plus" severity="success" @click="addNewHabit" />
-        </InputGroup>
-      </div>
-    </Drawer>
+    <HabitDrawer v-model:visible="drawerVisible" />
 
     <div class="flex-1 overflow-y-auto p-10">
       <div class="w-full max-w-7xl mx-auto px-10">
@@ -188,7 +129,7 @@ const isSelectedDayAFutureDate = computed(() => {
 
           <div class="space-y-2">
             <div
-              v-for="habit of habits"
+              v-for="habit of getListOfHabits()"
               :key="habit.id"
               class="p-4 flex items-center border border-gray-200 rounded-md"
             >
