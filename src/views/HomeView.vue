@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import Button from 'primevue/button'
-import Calendar from 'primevue/calendar'
+import DatePicker from 'primevue/datepicker'
 import Checkbox from 'primevue/checkbox'
 import Knob from 'primevue/knob'
 import { useRoute, useRouter } from 'vue-router'
@@ -95,7 +95,7 @@ const isSelectedDayAFutureDate = computed(() => {
     <div class="flex-1 overflow-y-auto p-10">
       <div class="w-full max-w-7xl mx-auto px-10">
         <div class="flex justify-end mb-4">
-          <Calendar v-model="buttondisplay" showIcon :showOnFocus="false" />
+          <DatePicker v-model="buttondisplay" showIcon :showOnFocus="false" />
         </div>
 
         <div class="py-4 gap-2 font-medium flex items-center justify-center">
