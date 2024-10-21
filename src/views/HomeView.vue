@@ -10,6 +10,7 @@ import InputText from 'primevue/inputtext'
 import Drawer from 'primevue/drawer'
 import Knob from 'primevue/knob'
 import { useRoute, useRouter } from 'vue-router'
+import AppHeader from '../components/AppHeader.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -115,14 +116,7 @@ const isSelectedDayAFutureDate = computed(() => {
 
 <template>
   <div class="flex flex-col min-h-screen">
-    <div class="flex justify-between items-center p-4 bg-gray-100 border-b">
-      <h1 class="text-xl font-bold">Habit Hack</h1>
-      <Button
-        label="Show and update habits list"
-        icon="pi pi-arrow-left"
-        @click="drawerVisible = true"
-      />
-    </div>
+    <AppHeader @toggle-drawer="drawerVisible = !drawerVisible" />
 
     <Drawer v-model:visible="drawerVisible" position="right">
       <template #header>
