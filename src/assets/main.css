@@ -3,3 +3,4 @@
 @import url('tailwindcss/components');
 @import url('tailwindcss/utilities');
 @import url('primeicons/primeicons.css');
+@import url('vue3-emoji-picker/css');
