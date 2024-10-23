@@ -3,8 +3,6 @@ import Button from 'primevue/button'
 import Drawer from 'primevue/drawer'
 import InputGroup from 'primevue/inputgroup'
 import InputText from 'primevue/inputtext'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
 import { defineProps, defineEmits, ref } from 'vue'
 
 import { addNewHabit, removeHabit, getListOfHabits, getNextHabitId } from '../store/habits'
@@ -38,19 +36,20 @@ const addNewHabitToStore = () => {
         <h1 class="text-2xl font-bold">Tracked Habits</h1>
       </div>
     </template>
-    <DataTable :value="getListOfHabits()" class="mt-1">
-      <Column field="name"></Column>
-      <Column class="!text-right">
-        <template #body="{ data }">
+    <TransitionGroup name="list" tag="ul">
+      <li v-for="habit of getListOfHabits()" :key="habit.id">
+        <div class="flex justify-between items-center p-2">
+          <span>{{ habit.name }}</span>
           <Button
             icon="pi pi-trash"
-            @click="removeHabit(data.id)"
+            @click="removeHabit(habit.id)"
             severity="secondary"
             class="p-button-text"
           ></Button>
-        </template>
-      </Column>
-    </DataTable>
+        </div>
+      </li>
+      <br v-if="getListOfHabits().length === 0" />
+    </TransitionGroup>
     <div class="mt-4">
       <InputGroup class="flex items-center">
         <InputText
@@ -65,3 +64,27 @@ const addNewHabitToStore = () => {
     </div>
   </Drawer>
 </template>
+
+<style scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+ul {
+  width: 52rem;
+}
+
+li {
+  list-style-type: none;
+  width: 33%;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+}
+</style>
