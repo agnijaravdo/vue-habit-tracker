@@ -7,7 +7,7 @@ import Knob from 'primevue/knob'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '../components/AppHeader.vue'
 import HabitDrawer from '../components/HabitDrawer.vue'
-import { getListOfHabits } from '../store/habits'
+import { getListOfHabits } from '../store/habitsList'
 
 const route = useRoute()
 const router = useRouter()
@@ -85,6 +85,8 @@ const isSelectedDayAFutureDate = computed(() => {
 
   return selectedDate > today
 })
+
+const habits = getListOfHabits()
 </script>
 
 <template>
@@ -125,17 +127,27 @@ const isSelectedDayAFutureDate = computed(() => {
         </div>
 
         <div v-else>
-          <Knob v-model="knobValue" valueTemplate="{value}%" class="flex justify-center py-4" />
+          <div v-if="habits.length">
+            <Knob v-model="knobValue" valueTemplate="{value}%" class="flex justify-center py-4" />
 
-          <div class="space-y-2">
-            <div
-              v-for="habit of getListOfHabits()"
-              :key="habit.id"
-              class="p-4 flex items-center border border-gray-200 rounded-md"
-            >
-              <Checkbox :name="habit.name" :value="habit.name" class="mr-2" />
-              <label :for="habit.id" class="cursor-pointer">{{ habit.name }}</label>
+            <div class="space-y-2">
+              <div
+                v-for="habit of habits"
+                :key="habit.id"
+                class="p-4 flex items-center border border-gray-200 rounded-md"
+              >
+                <Checkbox :name="habit.name" :value="habit.name" class="mr-2" />
+                <label :for="habit.id" class="cursor-pointer">{{ habit.name }}</label>
+              </div>
             </div>
+          </div>
+          <div v-else class="text-center text-gray-500 p-10">
+            <i class="pi pi-file-edit animate-pulse text-[#FCDE70]" style="font-size: 4rem"></i>
+            <p class="p-4">
+              Your habits list is empty. Please enter your habits by clicking 'Your habits list'
+              button.
+              <i class="pi pi-arrow-up-right text-[rgb(107 114 128)]" style="font-size: 1rem"></i>
+            </p>
           </div>
         </div>
       </div>

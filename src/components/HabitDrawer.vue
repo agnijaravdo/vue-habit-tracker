@@ -5,7 +5,7 @@ import Drawer from 'primevue/drawer'
 import InputText from 'primevue/inputtext'
 import EmojiPicker from 'vue3-emoji-picker'
 
-import { addNewHabit, removeHabit, getListOfHabits, getNextHabitId } from '../store/habits'
+import { addNewHabit, removeHabit, getListOfHabits, getNextHabitId } from '../store/habitsList'
 
 const visible = ref(false)
 const emit = defineEmits(['update:visible'])
@@ -17,16 +17,15 @@ const newHabit = ref('')
 const showEmojiPicker = ref(false)
 
 const toggleEmojiPicker = () => {
-  console.log('toggleEmojiPicker')
   showEmojiPicker.value = !showEmojiPicker.value
-  console.log(showEmojiPicker.value)
 }
 
 const addNewHabitToStore = () => {
   if (newHabit.value) {
     addNewHabit({
       id: getNextHabitId(),
-      name: newHabit.value
+      name: newHabit.value,
+      isDone: false
     })
     newHabit.value = ''
   }
