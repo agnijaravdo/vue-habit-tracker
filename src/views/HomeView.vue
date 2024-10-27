@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watchEffect } from 'vue'
 import DatePicker from 'primevue/datepicker'
 import Checkbox from 'primevue/checkbox'
 import Knob from 'primevue/knob'
@@ -9,6 +9,7 @@ import { getListOfHabits, removeHabitCompletion } from '../store/habitsList'
 import useCalendar from '../store/calendar'
 import DateSlider from '../components/DateSlider.vue'
 import { useStore } from '../store'
+import EmptyState from '../components/EmptyState.vue'
 
 const store = useStore()
 const { isSelectedDayAFutureDate, formattedDate } = useCalendar()
@@ -35,7 +36,7 @@ const toggleCompletion = (habit) => {
   }
 }
 
-watch(() => {
+watchEffect(() => {
   knobValue.value = Math.round(
     (habits.filter((habit) => isHabitChecked(habit)).length / habits.length) * 100
   )
@@ -55,14 +56,11 @@ watch(() => {
 
         <DateSlider />
 
-        <div v-if="isSelectedDayAFutureDate" class="text-center text-gray-500 p-10">
-          <i
-            class="pi pi-exclamation-circle animate-pulse text-[#FCDE70]"
-            style="font-size: 4rem"
-          ></i>
-          <p class="p-4">
-            You cannot mark habits for future dates, please select a past or current date.
-          </p>
+        <div v-if="isSelectedDayAFutureDate">
+          <EmptyState
+            text="You cannot mark habits for future dates, please select a past or current date."
+            iconName="pi-exclamation-circle"
+          />
         </div>
 
         <div v-else>
@@ -85,13 +83,13 @@ watch(() => {
               </div>
             </div>
           </div>
-          <div v-else class="text-center text-gray-500 p-10">
-            <i class="pi pi-file-edit animate-pulse text-[#FCDE70]" style="font-size: 4rem"></i>
-            <p class="p-4">
-              Your habits list is empty. Please enter your habits by clicking 'Your habits list'
-              button.
-              <i class="pi pi-arrow-up-right text-[rgb(107 114 128)]" style="font-size: 1rem"></i>
-            </p>
+          <div v-else>
+            <div class="text-center text-gray-500 p-10">
+              <EmptyState
+                text="Your habits list is empty. Please enter your habits by clicking 'Your habits list' button."
+                iconName="pi-file-edit"
+              />
+            </div>
           </div>
         </div>
       </div>
