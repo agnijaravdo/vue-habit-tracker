@@ -1,83 +1,27 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { computed, ref } from 'vue'
 import Button from 'primevue/button'
 import DatePicker from 'primevue/datepicker'
 import Checkbox from 'primevue/checkbox'
 import Knob from 'primevue/knob'
-import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '../components/AppHeader.vue'
 import HabitDrawer from '../components/HabitDrawer.vue'
 import { getListOfHabits, removeHabitCompletion } from '../store/habitsList'
+import { formatDate } from '../utils/dateUtil'
+import useCalendar from '../store/calendar'
 
-const route = useRoute()
-const router = useRouter()
-
-const isValidDate = (dateString) => {
-  const date = new Date(dateString)
-  return !Number.isNaN(date.getTime())
-}
-
-const currentWeekOffset = ref(0)
-const drawerVisible = ref(false)
-const knobValue = ref(60) // tmp value
-
-const paramsDay = isValidDate(route.params.day) ? new Date(route.params.day) : null
-
-const dateDisplay = ref(paramsDay || new Date())
-
-const getStartOfWeek = (date) => {
-  const weekDate = new Date(date)
-  const dayOfWeek = weekDate.getDay() || 7
-  weekDate.setHours(0, 0, 0, 0)
-  const difference = weekDate.getDate() - dayOfWeek + 1
-  return new Date(weekDate.setDate(difference))
-}
-
-const formatDate = (date) => {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
-
-const calculateWeekDays = (offset) => {
-  const startOfWeek = getStartOfWeek(paramsDay ? dateDisplay.value : new Date())
-  startOfWeek.setDate(startOfWeek.getDate() + offset * 7)
-  return Array.from({ length: 7 }, (_, i) => {
-    const day = new Date(startOfWeek)
-    day.setDate(startOfWeek.getDate() + i)
-    return {
-      dayOfTheWeek: day.toLocaleString('default', { weekday: 'long' }),
-      monthAndDay: day.toLocaleString('default', { day: 'numeric', month: 'short' }),
-      dayFormat: new Date(day)
-    }
-  })
-}
-
-const days = computed(() => calculateWeekDays(currentWeekOffset.value))
-
-const normalizedDisplayDate = computed(() => {
-  const normalizedDate = new Date(dateDisplay.value)
-  normalizedDate.setHours(0, 0, 0, 0)
-  return normalizedDate
-})
-
-const selectDate = (date) => {
-  dateDisplay.value = new Date(date)
-}
-
-const isSelectedDayAFutureDate = computed(() => {
-  const today = new Date()
-  const selectedDate = new Date(dateDisplay.value)
-
-  today.setHours(0, 0, 0, 0)
-  selectedDate.setHours(0, 0, 0, 0)
-
-  return selectedDate > today
-})
-
+const {
+  dateDisplay,
+  currentWeekOffset,
+  days,
+  normalizedDisplayDate,
+  isSelectedDayAFutureDate,
+  selectDate
+} = useCalendar()
 const habits = getListOfHabits()
 const formattedDate = computed(() => formatDate(dateDisplay.value))
+const drawerVisible = ref(false)
+const knobValue = ref(60) // tmp value
 
 const isHabitChecked = (habit) => {
   const habitByName = habits.find((h) => h.name === habit.name)
@@ -97,16 +41,6 @@ const toggleCompletion = (habit) => {
     habitByName.datesWhenCompleted.push(formattedDate.value)
   }
 }
-
-watch(dateDisplay, (newDate, oldDate) => {
-  if (newDate.getTime() !== oldDate.getTime()) {
-    const startOfCurrWeek = getStartOfWeek(new Date())
-    const startOfNewWeek = getStartOfWeek(newDate)
-    const diffWeeks = Math.round((startOfNewWeek - startOfCurrWeek) / (1000 * 60 * 60 * 24 * 7))
-    currentWeekOffset.value = diffWeeks
-    router.push({ name: 'day', params: { day: formatDate(newDate) } })
-  }
-})
 </script>
 
 <template>
