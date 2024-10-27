@@ -43,7 +43,6 @@ export function removeHabit(habitName) {
 export function removeHabitCompletion(habitName, completionDate) {
   const habit = habits.value.find((h) => h.name === habitName)
   if (!habit) return
-  console.log('i am here')
   const newHabits = habit.datesWhenCompleted.filter((date) => date !== completionDate)
   habit.datesWhenCompleted = newHabits
 }
