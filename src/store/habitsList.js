@@ -25,27 +25,21 @@ watch(
   { deep: true }
 )
 
-export function isHabitExist(habitId) {
-  return habits.value.some((h) => h.id === habitId)
+export function isHabitExist(habitName) {
+  return habits.value.find((h) => h.name === habitName)
 }
 
-export function removeHabit(habitId) {
-  if (!isHabitExist(habitId)) return
-  habits.value = habits.value.filter((h) => h.id !== habitId)
+export function removeHabit(habitName) {
+  const indexOfHabit = habits.value.findIndex((h) => h.name === habitName)
+  if (indexOfHabit === -1) return
+  habits.value.splice(indexOfHabit, 1)
 }
 
-export function addNewHabit(habit) {
-  if (isHabitExist(habit)) return
-  habits.value.push(habit)
+export function addNewHabit(habitName) {
+  if (isHabitExist(habitName)) return
+  habits.value.push({ name: habitName })
 }
 
 export function getListOfHabits() {
   return habits.value
-}
-
-export function getNextHabitId() {
-  const habitsList = getListOfHabits()
-  if (habitsList.length === 0) return 1
-  const ids = habitsList.map((h) => h.id)
-  return Math.max(...ids) + 1
 }

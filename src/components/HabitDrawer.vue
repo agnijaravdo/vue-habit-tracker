@@ -4,8 +4,7 @@ import Button from 'primevue/button'
 import Drawer from 'primevue/drawer'
 import InputText from 'primevue/inputtext'
 import EmojiPicker from 'vue3-emoji-picker'
-
-import { addNewHabit, removeHabit, getListOfHabits, getNextHabitId } from '../store/habitsList'
+import { isHabitExist, addNewHabit, removeHabit, getListOfHabits } from '../store/habitsList'
 
 const visible = ref(false)
 const emit = defineEmits(['update:visible'])
@@ -14,19 +13,20 @@ const onDrawerClose = () => {
 }
 
 const newHabit = ref('')
+const inputValid = ref(true)
 const showEmojiPicker = ref(false)
 
 const toggleEmojiPicker = () => {
   showEmojiPicker.value = !showEmojiPicker.value
 }
 
-const addNewHabitToStore = () => {
+const addNewHabitToStoreAndClearInput = () => {
   if (newHabit.value) {
-    addNewHabit({
-      id: getNextHabitId(),
-      name: newHabit.value,
-      isDone: false
-    })
+    if (isHabitExist(newHabit.value.trim())) {
+      inputValid.value = false
+    } else {
+      addNewHabit(newHabit.value)
+    }
     newHabit.value = ''
   }
 }
@@ -46,12 +46,12 @@ const onSelectEmoji = (emoji) => {
     </template>
     <div class="scrollable-content">
       <TransitionGroup name="list" tag="ul">
-        <li v-for="habit of getListOfHabits()" :key="habit.id">
+        <li v-for="habit of getListOfHabits()" :key="habit.name">
           <div class="flex justify-between items-center p-2">
             <span>{{ habit.name }}</span>
             <Button
               icon="pi pi-trash"
-              @click="removeHabit(habit.id)"
+              @click="removeHabit(habit.name)"
               severity="secondary"
               class="p-button-text"
             ></Button>
@@ -59,13 +59,14 @@ const onSelectEmoji = (emoji) => {
         </li>
       </TransitionGroup>
       <div class="mt-4 space-y-3">
-        <div class="flex mb-2 space-x-1" style="width: 105%">
+        <div class="flex space-x-1" style="width: 105%">
           <InputText
             v-model="newHabit"
             id="new-habit"
             placeholder="Enter New Habit"
             class="flex-auto"
-            v-on:keyup.enter="addNewHabitToStore"
+            v-on:keyup="inputValid = true"
+            v-on:keyup.enter="addNewHabitToStoreAndClearInput"
           />
           <Button icon="pi pi-face-smile" @click="toggleEmojiPicker" severity="secondary" />
         </div>
@@ -74,11 +75,12 @@ const onSelectEmoji = (emoji) => {
           @select="onSelectEmoji"
           style="position: absolute; z-index: 1000; top: 240px; left: 0"
         />
+        <div v-if="!inputValid" class="text-red-500 text-xs">Habit already exists</div>
         <Button
           icon="pi pi-plus"
           label="Add new habit"
           severity="success"
-          @click="addNewHabitToStore"
+          @click="addNewHabitToStoreAndClearInput"
           style="width: 105%"
         />
       </div>

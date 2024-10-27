@@ -133,11 +133,11 @@ const habits = getListOfHabits()
             <div class="space-y-2">
               <div
                 v-for="habit of habits"
-                :key="habit.id"
+                :key="habit.name"
                 class="p-4 flex items-center border border-gray-200 rounded-md"
               >
                 <Checkbox :name="habit.name" :value="habit.name" class="mr-2" />
-                <label :for="habit.id" class="cursor-pointer">{{ habit.name }}</label>
+                <label :for="habit.name" class="cursor-pointer">{{ habit.name }}</label>
               </div>
             </div>
           </div>
