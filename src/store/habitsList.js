@@ -1,4 +1,5 @@
 import { ref, watch } from 'vue'
+import { setError } from './error'
 
 const HABITS_STORAGE_KEY = 'habits'
 
@@ -18,8 +19,12 @@ watch(
   (updatedHabits) => {
     try {
       localStorage.setItem(HABITS_STORAGE_KEY, JSON.stringify(updatedHabits))
-    } catch (e) {
-      console.error('Error saving habits to localStorage')
+    } catch (error) {
+      setError(
+        new Error('Could not store your habit. You might need to refresh the page', {
+          cause: error
+        })
+      )
     }
   },
   { deep: true }
