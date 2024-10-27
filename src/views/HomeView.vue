@@ -23,7 +23,7 @@ const knobValue = ref(60) // tmp value
 
 const paramsDay = isValidDate(route.params.day) ? new Date(route.params.day) : null
 
-const buttonDisplay = ref(paramsDay || new Date())
+const dateDisplay = ref(paramsDay || new Date())
 
 const getStartOfWeek = (date) => {
   const weekDate = new Date(date)
@@ -41,7 +41,7 @@ const formatDate = (date) => {
 }
 
 const calculateWeekDays = (offset) => {
-  const startOfWeek = getStartOfWeek(paramsDay ? buttonDisplay.value : new Date())
+  const startOfWeek = getStartOfWeek(paramsDay ? dateDisplay.value : new Date())
   startOfWeek.setDate(startOfWeek.getDate() + offset * 7)
   return Array.from({ length: 7 }, (_, i) => {
     const day = new Date(startOfWeek)
@@ -57,18 +57,18 @@ const calculateWeekDays = (offset) => {
 const days = computed(() => calculateWeekDays(currentWeekOffset.value))
 
 const normalizedDisplayDate = computed(() => {
-  const normalizedDate = new Date(buttonDisplay.value)
+  const normalizedDate = new Date(dateDisplay.value)
   normalizedDate.setHours(0, 0, 0, 0)
   return normalizedDate
 })
 
 const selectDate = (date) => {
-  buttonDisplay.value = new Date(date)
+  dateDisplay.value = new Date(date)
 }
 
 const isSelectedDayAFutureDate = computed(() => {
   const today = new Date()
-  const selectedDate = new Date(buttonDisplay.value)
+  const selectedDate = new Date(dateDisplay.value)
 
   today.setHours(0, 0, 0, 0)
   selectedDate.setHours(0, 0, 0, 0)
@@ -77,7 +77,7 @@ const isSelectedDayAFutureDate = computed(() => {
 })
 
 const habits = getListOfHabits()
-const formattedDate = computed(() => formatDate(buttonDisplay.value))
+const formattedDate = computed(() => formatDate(dateDisplay.value))
 
 const isHabitChecked = (habit) => {
   const habitByName = habits.find((h) => h.name === habit.name)
@@ -98,7 +98,7 @@ const toggleCompletion = (habit) => {
   }
 }
 
-watch(buttonDisplay, (newDate, oldDate) => {
+watch(dateDisplay, (newDate, oldDate) => {
   if (newDate.getTime() !== oldDate.getTime()) {
     const startOfCurrWeek = getStartOfWeek(new Date())
     const startOfNewWeek = getStartOfWeek(newDate)
@@ -117,7 +117,7 @@ watch(buttonDisplay, (newDate, oldDate) => {
     <div class="flex-1 overflow-y-auto p-10">
       <div class="w-full max-w-7xl mx-auto px-10">
         <div class="flex justify-end mb-4">
-          <DatePicker v-model="buttonDisplay" showIcon :showOnFocus="false" />
+          <DatePicker v-model="dateDisplay" showIcon :showOnFocus="false" />
         </div>
 
         <div class="py-4 gap-2 font-medium flex items-center justify-center">
