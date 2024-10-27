@@ -1,25 +1,18 @@
 <script setup>
-import { computed, ref } from 'vue'
-import Button from 'primevue/button'
+import { ref } from 'vue'
 import DatePicker from 'primevue/datepicker'
 import Checkbox from 'primevue/checkbox'
 import Knob from 'primevue/knob'
 import AppHeader from '../components/AppHeader.vue'
 import HabitDrawer from '../components/HabitDrawer.vue'
 import { getListOfHabits, removeHabitCompletion } from '../store/habitsList'
-import { formatDate } from '../utils/dateUtil'
 import useCalendar from '../store/calendar'
+import DateSlider from '../components/DateSlider.vue'
+import { useStore } from '../store'
 
-const {
-  dateDisplay,
-  currentWeekOffset,
-  days,
-  normalizedDisplayDate,
-  isSelectedDayAFutureDate,
-  selectDate
-} = useCalendar()
+const store = useStore()
+const { isSelectedDayAFutureDate, formattedDate } = useCalendar()
 const habits = getListOfHabits()
-const formattedDate = computed(() => formatDate(dateDisplay.value))
 const drawerVisible = ref(false)
 const knobValue = ref(60) // tmp value
 
@@ -51,24 +44,10 @@ const toggleCompletion = (habit) => {
     <div class="flex-1 overflow-y-auto p-10">
       <div class="w-full max-w-7xl mx-auto px-10">
         <div class="flex justify-end mb-4">
-          <DatePicker v-model="dateDisplay" showIcon :showOnFocus="false" />
+          <DatePicker v-model="store.dateDisplay" showIcon :showOnFocus="false" />
         </div>
 
-        <div class="py-4 gap-2 font-medium flex items-center justify-center">
-          <Button icon="pi pi-angle-left" @click="currentWeekOffset--" />
-          <div class="gap-2 flex overflow-x-auto">
-            <div v-for="(day, index) in days" :key="index" class="whitespace-pre">
-              <Button
-                :label="`${day.dayOfTheWeek}, ${day.monthAndDay}`"
-                :severity="
-                  day.dayFormat.getTime() === normalizedDisplayDate.getTime() ? 'info' : 'secondary'
-                "
-                @click="selectDate(day.dayFormat)"
-              />
-            </div>
-          </div>
-          <Button icon="pi pi-angle-right" @click="currentWeekOffset++" />
-        </div>
+        <DateSlider />
 
         <div v-if="isSelectedDayAFutureDate" class="text-center text-gray-500 p-10">
           <i

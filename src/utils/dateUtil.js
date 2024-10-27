@@ -11,20 +11,6 @@ const getStartOfWeek = (date) => {
   return new Date(weekDate.setDate(difference))
 }
 
-const calculateWeekDays = (offset, paramsDay, dateDisplay) => {
-  const startOfWeek = getStartOfWeek(paramsDay ? dateDisplay : new Date())
-  startOfWeek.setDate(startOfWeek.getDate() + offset * 7)
-  return Array.from({ length: 7 }, (_, i) => {
-    const day = new Date(startOfWeek)
-    day.setDate(startOfWeek.getDate() + i)
-    return {
-      dayOfTheWeek: day.toLocaleString('default', { weekday: 'long' }),
-      monthAndDay: day.toLocaleString('default', { day: 'numeric', month: 'short' }),
-      dayFormat: new Date(day)
-    }
-  })
-}
-
 const formatDate = (date) => {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -32,4 +18,4 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`
 }
 
-export { isValidDate, getStartOfWeek, calculateWeekDays, formatDate }
+export { isValidDate, getStartOfWeek, formatDate }
