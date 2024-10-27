@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import DatePicker from 'primevue/datepicker'
 import Checkbox from 'primevue/checkbox'
 import Knob from 'primevue/knob'
@@ -14,7 +14,7 @@ const store = useStore()
 const { isSelectedDayAFutureDate, formattedDate } = useCalendar()
 const habits = getListOfHabits()
 const drawerVisible = ref(false)
-const knobValue = ref(60) // tmp value
+const knobValue = ref(0)
 
 const isHabitChecked = (habit) => {
   const habitByName = habits.find((h) => h.name === habit.name)
@@ -34,6 +34,12 @@ const toggleCompletion = (habit) => {
     habitByName.datesWhenCompleted.push(formattedDate.value)
   }
 }
+
+watch(() => {
+  knobValue.value = Math.round(
+    (habits.filter((habit) => isHabitChecked(habit)).length / habits.length) * 100
+  )
+})
 </script>
 
 <template>
