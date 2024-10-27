@@ -156,7 +156,7 @@ watch(dateDisplay, (newDate, oldDate) => {
                 :key="habit.name"
                 class="p-4 flex items-center border border-gray-200 rounded-md"
               >
-                <checkbox
+                <Checkbox
                   :binary="true"
                   class="mr-2"
                   :modelValue="isHabitChecked(habit)"
