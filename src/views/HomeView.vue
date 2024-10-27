@@ -7,7 +7,7 @@ import Knob from 'primevue/knob'
 import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '../components/AppHeader.vue'
 import HabitDrawer from '../components/HabitDrawer.vue'
-import { getListOfHabits } from '../store/habitsList'
+import { getListOfHabits, removeHabitCompletion } from '../store/habitsList'
 
 const route = useRoute()
 const router = useRouter()
@@ -23,7 +23,7 @@ const knobValue = ref(60) // tmp value
 
 const paramsDay = isValidDate(route.params.day) ? new Date(route.params.day) : null
 
-const buttondisplay = ref(paramsDay || new Date())
+const buttonDisplay = ref(paramsDay || new Date())
 
 const getStartOfWeek = (date) => {
   const weekDate = new Date(date)
@@ -41,7 +41,7 @@ const formatDate = (date) => {
 }
 
 const calculateWeekDays = (offset) => {
-  const startOfWeek = getStartOfWeek(paramsDay ? buttondisplay.value : new Date())
+  const startOfWeek = getStartOfWeek(paramsDay ? buttonDisplay.value : new Date())
   startOfWeek.setDate(startOfWeek.getDate() + offset * 7)
   return Array.from({ length: 7 }, (_, i) => {
     const day = new Date(startOfWeek)
@@ -57,28 +57,18 @@ const calculateWeekDays = (offset) => {
 const days = computed(() => calculateWeekDays(currentWeekOffset.value))
 
 const normalizedDisplayDate = computed(() => {
-  const normalizedDate = new Date(buttondisplay.value)
+  const normalizedDate = new Date(buttonDisplay.value)
   normalizedDate.setHours(0, 0, 0, 0)
   return normalizedDate
 })
 
-watch(buttondisplay, (newDate, oldDate) => {
-  if (newDate.getTime() !== oldDate.getTime()) {
-    const startOfCurrWeek = getStartOfWeek(new Date())
-    const startOfNewWeek = getStartOfWeek(newDate)
-    const diffWeeks = Math.round((startOfNewWeek - startOfCurrWeek) / (1000 * 60 * 60 * 24 * 7))
-    currentWeekOffset.value = diffWeeks
-    router.push({ name: 'day', params: { day: formatDate(newDate) } })
-  }
-})
-
 const selectDate = (date) => {
-  buttondisplay.value = new Date(date)
+  buttonDisplay.value = new Date(date)
 }
 
 const isSelectedDayAFutureDate = computed(() => {
   const today = new Date()
-  const selectedDate = new Date(buttondisplay.value)
+  const selectedDate = new Date(buttonDisplay.value)
 
   today.setHours(0, 0, 0, 0)
   selectedDate.setHours(0, 0, 0, 0)
@@ -87,6 +77,36 @@ const isSelectedDayAFutureDate = computed(() => {
 })
 
 const habits = getListOfHabits()
+const formattedDate = computed(() => formatDate(buttonDisplay.value))
+
+const isHabitChecked = (habit) => {
+  const habitByName = habits.find((h) => h.name === habit.name)
+  const isCompleted = habitByName?.datesWhenCompleted?.includes(formattedDate.value)
+  return isCompleted
+}
+
+const toggleCompletion = (habit) => {
+  const habitByName = habits.find((h) => h.name === habit.name)
+  if (!habitByName?.datesWhenCompleted) {
+    habitByName.datesWhenCompleted = []
+  }
+
+  if (isHabitChecked(habit)) {
+    removeHabitCompletion(habitByName.name, formattedDate.value)
+  } else {
+    habitByName.datesWhenCompleted.push(formattedDate.value)
+  }
+}
+
+watch(buttonDisplay, (newDate, oldDate) => {
+  if (newDate.getTime() !== oldDate.getTime()) {
+    const startOfCurrWeek = getStartOfWeek(new Date())
+    const startOfNewWeek = getStartOfWeek(newDate)
+    const diffWeeks = Math.round((startOfNewWeek - startOfCurrWeek) / (1000 * 60 * 60 * 24 * 7))
+    currentWeekOffset.value = diffWeeks
+    router.push({ name: 'day', params: { day: formatDate(newDate) } })
+  }
+})
 </script>
 
 <template>
@@ -97,7 +117,7 @@ const habits = getListOfHabits()
     <div class="flex-1 overflow-y-auto p-10">
       <div class="w-full max-w-7xl mx-auto px-10">
         <div class="flex justify-end mb-4">
-          <DatePicker v-model="buttondisplay" showIcon :showOnFocus="false" />
+          <DatePicker v-model="buttonDisplay" showIcon :showOnFocus="false" />
         </div>
 
         <div class="py-4 gap-2 font-medium flex items-center justify-center">
@@ -136,7 +156,12 @@ const habits = getListOfHabits()
                 :key="habit.name"
                 class="p-4 flex items-center border border-gray-200 rounded-md"
               >
-                <Checkbox :name="habit.name" :value="habit.name" class="mr-2" />
+                <checkbox
+                  :binary="true"
+                  class="mr-2"
+                  :modelValue="isHabitChecked(habit)"
+                  @change="toggleCompletion(habit)"
+                />
                 <label :for="habit.name" class="cursor-pointer">{{ habit.name }}</label>
               </div>
             </div>
