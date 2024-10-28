@@ -10,11 +10,11 @@ function useCalendar() {
 
   const paramsDay = isValidDate(route.params.day) ? new Date(route.params.day) : null
 
-  if (paramsDay) {
-    store.dateDisplay = paramsDay
-  } else {
-    store.dateDisplay = new Date()
-  }
+  //   if (paramsDay) {
+  //     store.dateDisplay = paramsDay
+  //   } else {
+  //     store.dateDisplay = new Date()
+  //   }
 
   const normalizedDisplayDate = computed(() => {
     const normalizedDate = new Date(store.dateDisplay)
@@ -32,6 +32,7 @@ function useCalendar() {
 
   const selectDate = (date) => {
     store.dateDisplay = new Date(date)
+    store.currentWeekOffset = 0
   }
 
   const calculateWeekDays = (offset) => {
@@ -58,11 +59,6 @@ function useCalendar() {
     () => store.dateDisplay,
     (newDate, oldDate) => {
       if (newDate.getTime() !== oldDate.getTime()) {
-        const startOfCurrWeek = getStartOfWeek(new Date())
-        const startOfNewWeek = getStartOfWeek(newDate)
-        const diffWeeks = Math.round((startOfNewWeek - startOfCurrWeek) / (1000 * 60 * 60 * 24 * 7))
-        store.currentWeekOffset = diffWeeks
-
         const today = new Date()
         const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate())
 

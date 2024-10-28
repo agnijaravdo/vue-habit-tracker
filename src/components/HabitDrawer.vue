@@ -39,7 +39,7 @@ const onSelectEmoji = (emoji) => {
 </script>
 
 <template>
-  <Drawer :visible="visible" @update:visible="onDrawerClose" position="right">
+  <Drawer :visible="visible" @update:visible="onDrawerClose" position="right" class="lg:!w-[25rem]">
     <template #header>
       <div class="flex justify-between items-center p-2">
         <h1 class="text-2xl font-bold">Tracked Habits</h1>
@@ -58,7 +58,7 @@ const onSelectEmoji = (emoji) => {
         </div>
       </li>
     </TransitionGroup>
-    <div class="mt-4 space-y-3 pr-3">
+    <div class="mt-4 space-y-3 pr-4">
       <div class="flex space-x-1" style="width: 105%">
         <InputText
           v-model="newHabit"
@@ -106,7 +106,7 @@ ul {
 
 li {
   list-style-type: none;
-  width: 33%;
+  width: 42%;
   border-bottom: 1px solid #e0e0e0;
   text-align: center;
 }
