@@ -48,6 +48,28 @@ function useCalendar() {
   let isInternalUpdate = false
 
   watch(
+    () => route.params.day,
+    (newDay) => {
+      if (!newDay) {
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        isInternalUpdate = true
+        store.dateDisplay = today
+        return
+      }
+
+      if (isValidDate(newDay)) {
+        const parsedDate = new Date(newDay)
+        if (parsedDate.getTime() !== store.dateDisplay.getTime()) {
+          isInternalUpdate = true
+          store.dateDisplay = parsedDate
+        }
+      }
+    },
+    { immediate: true }
+  )
+
+  watch(
     () => store.dateDisplay,
     (newDate, oldDate) => {
       if (isInternalUpdate) {
@@ -60,20 +82,6 @@ function useCalendar() {
         router.push({ name: 'day', params: { day: formatDate(newDate) } })
       }
     }
-  )
-
-  watch(
-    () => route.params.day,
-    (newDay) => {
-      if (newDay && isValidDate(newDay)) {
-        const parsedDate = new Date(newDay)
-        if (parsedDate.getTime() !== store.dateDisplay.getTime()) {
-          isInternalUpdate = true
-          store.dateDisplay = parsedDate
-        }
-      }
-    },
-    { immediate: true }
   )
 
   return {
