@@ -8,14 +8,6 @@ function useCalendar() {
   const router = useRouter()
   const store = useStore()
 
-  const paramsDay = isValidDate(route.params.day) ? new Date(route.params.day) : null
-
-  //   if (paramsDay) {
-  //     store.dateDisplay = paramsDay
-  //   } else {
-  //     store.dateDisplay = new Date()
-  //   }
-
   const normalizedDisplayDate = computed(() => {
     const normalizedDate = new Date(store.dateDisplay)
     normalizedDate.setHours(0, 0, 0, 0)
@@ -31,13 +23,14 @@ function useCalendar() {
   })
 
   const selectDate = (date) => {
-    store.dateDisplay = new Date(date)
+    store.dateDisplay = date
     store.currentWeekOffset = 0
   }
 
   const calculateWeekDays = (offset) => {
-    const startOfWeek = getStartOfWeek(paramsDay ? store.dateDisplay : new Date())
+    const startOfWeek = getStartOfWeek(store.dateDisplay)
     startOfWeek.setDate(startOfWeek.getDate() + offset * 7)
+
     return Array.from({ length: 7 }, (_, i) => {
       const day = new Date(startOfWeek)
       day.setDate(startOfWeek.getDate() + i)
@@ -49,30 +42,38 @@ function useCalendar() {
     })
   }
 
-  const days = computed(() =>
-    calculateWeekDays(store.currentWeekOffset, paramsDay, store.dateDisplay)
-  )
-
+  const days = computed(() => calculateWeekDays(store.currentWeekOffset))
   const formattedDate = computed(() => formatDate(store.dateDisplay))
+
+  let isInternalUpdate = false
 
   watch(
     () => store.dateDisplay,
     (newDate, oldDate) => {
+      if (isInternalUpdate) {
+        isInternalUpdate = false
+        return
+      }
+
       if (newDate.getTime() !== oldDate.getTime()) {
-        const today = new Date()
-        const todayNormalized = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-
-        const newDateNormalized = new Date(
-          newDate.getFullYear(),
-          newDate.getMonth(),
-          newDate.getDate()
-        )
-
-        if (newDateNormalized.getTime() !== todayNormalized.getTime()) {
-          router.push({ name: 'day', params: { day: formatDate(newDate) } })
-        }
+        isInternalUpdate = true
+        router.push({ name: 'day', params: { day: formatDate(newDate) } })
       }
     }
+  )
+
+  watch(
+    () => route.params.day,
+    (newDay) => {
+      if (newDay && isValidDate(newDay)) {
+        const parsedDate = new Date(newDay)
+        if (parsedDate.getTime() !== store.dateDisplay.getTime()) {
+          isInternalUpdate = true
+          store.dateDisplay = parsedDate
+        }
+      }
+    },
+    { immediate: true }
   )
 
   return {
