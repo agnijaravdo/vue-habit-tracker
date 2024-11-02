@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import Button from 'primevue/button'
 import Drawer from 'primevue/drawer'
 import InputText from 'primevue/inputtext'
+import InputGroup from 'primevue/inputgroup'
 import EmojiPicker from 'vue3-emoji-picker'
 import {
   isHabitExist,
@@ -17,6 +18,7 @@ const newHabit = ref('')
 const inputValid = ref(true)
 const showEmojiPicker = ref(false)
 const editStates = ref({})
+const valueToEdit = ref('')
 
 const emit = defineEmits(['update:visible'])
 const onDrawerClose = () => {
@@ -26,8 +28,9 @@ const onDrawerClose = () => {
   editStates.value = {}
 }
 
-const toggleEmojiPicker = () => {
+const toggleEmojiPicker = (habitName = null) => {
   showEmojiPicker.value = !showEmojiPicker.value
+  valueToEdit.value = habitName
 }
 
 const addNewHabitToStoreAndClearInput = () => {
@@ -42,7 +45,11 @@ const addNewHabitToStoreAndClearInput = () => {
 }
 
 const onSelectEmoji = (emoji) => {
-  newHabit.value += emoji.i
+  if (valueToEdit.value) {
+    editStates.value[valueToEdit.value].newName += emoji.i
+  } else {
+    newHabit.value += emoji.i
+  }
   showEmojiPicker.value = false
 }
 
@@ -77,11 +84,22 @@ const saveHabit = (habit) => {
       >
         <div class="flex-1 flex items-center">
           <template v-if="editStates[habit.name]?.isEditing">
-            <input
-              v-model="editStates[habit.name].newName"
-              class="flex-grow border border-blue-500 outline-none focus:ring-2 focus:border-blue-500 mr-2"
-              @keyup.enter="saveHabit(habit)"
-            />
+            <InputGroup>
+              <InputText
+                v-model="editStates[habit.name].newName"
+                id="edit-habit"
+                placeholder="Edit Your Habit"
+                class="flex-grow border border-blue-500 outline-none focus:ring-2 focus:border-blue-500 mr-2"
+                @keyup.enter="saveHabit(habit)"
+              />
+              <InputGroupAddon>
+                <Button
+                  icon="pi pi-face-smile"
+                  @click="toggleEmojiPicker(habit.name)"
+                  severity="secondary"
+                />
+              </InputGroupAddon>
+            </InputGroup>
           </template>
           <template v-else>
             <span class="flex-grow text-left cursor-default break-all">{{ habit.name }}</span>
@@ -115,21 +133,32 @@ const saveHabit = (habit) => {
         </div>
       </li>
     </TransitionGroup>
-    <div class="mt-4 space-y-3 pr-4">
-      <div class="flex space-x-1" style="max-width: 100%">
-        <InputText
-          v-model="newHabit"
-          id="new-habit"
-          placeholder="Enter New Habit"
-          class="flex-auto"
-          @keyup.enter="addNewHabitToStoreAndClearInput"
-        />
-        <Button icon="pi pi-face-smile" @click="toggleEmojiPicker" severity="secondary" />
+    <div class="mt-4 space-y-3">
+      <div style="max-width: 100%">
+        <InputGroup>
+          <InputText
+            v-model="newHabit"
+            id="new-habit"
+            placeholder="Enter New Habit"
+            class="flex-auto"
+            @keyup.enter="addNewHabitToStoreAndClearInput"
+          />
+          <InputGroupAddon>
+            <Button icon="pi pi-face-smile" @click="toggleEmojiPicker()" severity="secondary" />
+          </InputGroupAddon>
+        </InputGroup>
       </div>
       <EmojiPicker
         v-if="showEmojiPicker"
         @select="onSelectEmoji"
-        style="position: absolute; z-index: 1000; top: 240px; left: 0"
+        disable-skin-tones
+        style="
+          position: absolute;
+          z-index: 1000;
+          top: 240px;
+          left: 50%;
+          transform: translateX(-50%);
+        "
       />
       <div v-if="!inputValid" class="text-red-500 text-xs">Habit already exists</div>
       <Button
@@ -142,7 +171,6 @@ const saveHabit = (habit) => {
     </div>
   </Drawer>
 </template>
-
 <style scoped>
 .list-enter-active,
 .list-leave-active {
