@@ -40,6 +40,11 @@ export function removeHabit(habitName) {
   habits.value.splice(indexOfHabit, 1)
 }
 
+export function editHabitName(oldHabitName, newHabitName) {
+  const habit = habits.value.find((h) => h.name === oldHabitName)
+  if (!habit) return
+  habit.name = newHabitName
+}
 export function removeHabitCompletion(habitName, completionDate) {
   const habit = habits.value.find((h) => h.name === habitName)
   if (!habit) return
