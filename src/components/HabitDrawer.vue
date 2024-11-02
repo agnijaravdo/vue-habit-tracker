@@ -61,6 +61,7 @@ const saveHabit = (habit) => {
   editStates.value[habit.name].isEditing = false
 }
 </script>
+
 <template>
   <Drawer :visible="visible" @update:visible="onDrawerClose" position="right" class="lg:!w-[25rem]">
     <template #header>
@@ -68,7 +69,7 @@ const saveHabit = (habit) => {
         <h1 class="text-2xl font-bold">Tracked Habits</h1>
       </div>
     </template>
-    <TransitionGroup name="list" tag="ul">
+    <TransitionGroup name="list" tag="ul" class="w-full">
       <li
         v-for="habit of getListOfHabits()"
         :key="habit.name"
@@ -78,12 +79,12 @@ const saveHabit = (habit) => {
           <template v-if="editStates[habit.name]?.isEditing">
             <input
               v-model="editStates[habit.name].newName"
-              class="w-[70%] border border-blue-500 outline-none focus:ring-2 focus:border-blue-500"
+              class="flex-grow border border-blue-500 outline-none focus:ring-2 focus:border-blue-500 mr-2"
               @keyup.enter="saveHabit(habit)"
             />
           </template>
           <template v-else>
-            <span class="cursor-default items-start">{{ habit.name }}</span>
+            <span class="flex-grow text-left cursor-default break-all">{{ habit.name }}</span>
           </template>
         </div>
         <div class="flex items-center justify-end space-x-2">
@@ -115,7 +116,7 @@ const saveHabit = (habit) => {
       </li>
     </TransitionGroup>
     <div class="mt-4 space-y-3 pr-4">
-      <div class="flex space-x-1" style="width: 105%">
+      <div class="flex space-x-1" style="max-width: 100%">
         <InputText
           v-model="newHabit"
           id="new-habit"
@@ -136,7 +137,7 @@ const saveHabit = (habit) => {
         label="Add new habit"
         severity="success"
         @click="addNewHabitToStoreAndClearInput"
-        style="width: 105%"
+        class="w-full"
       />
     </div>
   </Drawer>
@@ -154,14 +155,7 @@ const saveHabit = (habit) => {
   transform: translateX(30px);
 }
 
-ul {
-  width: 52rem;
-}
-
 li {
   list-style-type: none;
-  width: 42%;
-  border-bottom: 1px solid #e0e0e0;
-  text-align: center;
 }
 </style>
