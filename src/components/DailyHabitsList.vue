@@ -59,7 +59,7 @@ watch(
 
 <template>
   <div v-if="habits.length">
-    <Knob v-model="knob" class="flex justify-center py-4" />
+    <Knob v-model="knob" valueTemplate="{value}%" class="flex justify-center py-4" />
     <div
       class="fixed inset-0 flex items-center justify-center pointer-events-none"
       v-if="knob === 100"
