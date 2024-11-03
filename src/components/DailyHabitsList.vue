@@ -41,6 +41,11 @@ const calculateKnobValue = () => {
   const activeHabits = habits.filter((habit) => !(habit.isStopped && isSelectedDayIsToday.value))
   const completedActiveHabits = activeHabits.filter(isHabitChecked)
 
+  if (!activeHabits.length) {
+    knob.value = 0
+    return
+  }
+
   knob.value = Math.round((completedActiveHabits.length / activeHabits.length) * 100)
 }
 
