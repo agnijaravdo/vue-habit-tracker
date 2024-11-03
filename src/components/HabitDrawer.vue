@@ -4,6 +4,7 @@ import Button from 'primevue/button'
 import Drawer from 'primevue/drawer'
 import InputText from 'primevue/inputtext'
 import InputGroup from 'primevue/inputgroup'
+import InputGroupAddon from 'primevue/inputgroupaddon'
 import EmojiPicker from 'vue3-emoji-picker'
 import {
   isHabitExist,
@@ -31,6 +32,14 @@ const onDrawerClose = () => {
 const toggleEmojiPicker = (habitName = null) => {
   showEmojiPicker.value = !showEmojiPicker.value
   valueToEdit.value = habitName
+}
+
+const markHabitAsStopped = (habitName) => {
+  const habitByName = getListOfHabits().find((h) => h.name === habitName)
+  if (!habitByName?.isStopped) {
+    habitByName.isStopped = false
+  }
+  habitByName.isStopped = !habitByName.isStopped
 }
 
 const addNewHabitToStoreAndClearInput = () => {
@@ -81,6 +90,9 @@ const saveHabit = (habit) => {
         v-for="habit of getListOfHabits()"
         :key="habit.name"
         class="flex justify-between items-center border-b border-gray-300 py-2"
+        :style="{
+          color: habit.isStopped ? 'red' : 'inherit'
+        }"
       >
         <div class="flex-1 flex items-center">
           <template v-if="editStates[habit.name]?.isEditing">
@@ -102,7 +114,13 @@ const saveHabit = (habit) => {
             </InputGroup>
           </template>
           <template v-else>
-            <span class="flex-grow text-left cursor-default break-all">{{ habit.name }}</span>
+            <span
+              class="flex-grow text-left cursor-default break-all"
+              :style="{
+                textDecoration: habit.isStopped ? 'line-through' : 'none'
+              }"
+              >{{ habit.name }}
+            </span>
           </template>
         </div>
         <div class="flex items-center justify-end space-x-2">
@@ -122,6 +140,23 @@ const saveHabit = (habit) => {
             severity="secondary"
             class="p-button-text"
             style="color: green"
+          />
+          <Button
+            v-if="habit.isStopped"
+            icon="pi pi-play"
+            @click="markHabitAsStopped(habit.name)"
+            title="Enable habit back"
+            severity="secondary"
+            class="p-button-text"
+            style="color: green"
+          />
+          <Button
+            v-else
+            icon="pi pi-stop"
+            @click="markHabitAsStopped(habit.name)"
+            title="Stop habit from today"
+            severity="secondary"
+            class="p-button-text"
           />
           <Button
             icon="pi pi-trash"

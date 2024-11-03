@@ -40,6 +40,17 @@ export function removeHabit(habitName) {
   habits.value.splice(indexOfHabit, 1)
 }
 
+export function stopHabitStartingToday(habitName) {
+  const habit = habits.value.find((h) => h.name === habitName)
+
+  console.log('habit', habit)
+  if (!habit) return
+  const updatedHabits = habit.datesWhenCompleted.filter(
+    (date) => date < new Date().toISOString().split('T')[0]
+  )
+  habit.datesWhenCompleted = updatedHabits
+}
+
 export function editHabitName(oldHabitName, newHabitName) {
   const habit = habits.value.find((h) => h.name === oldHabitName)
   if (!habit) return
