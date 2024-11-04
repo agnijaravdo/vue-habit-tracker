@@ -1,12 +1,11 @@
 import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { isValidDate, getStartOfWeek, formatDate } from '../utils/dateUtil'
-import { useStore } from '../store'
+import store from './store'
 
 function useCalendar() {
   const route = useRoute()
   const router = useRouter()
-  const store = useStore()
 
   const normalizedDisplayDate = computed(() => {
     const normalizedDate = new Date(store.dateDisplay)

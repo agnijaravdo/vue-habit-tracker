@@ -6,10 +6,9 @@ import ConfettiExplosion from 'vue-confetti-explosion'
 import EmptyState from './EmptyState.vue'
 import useCalendar from '../store/calendar'
 import { getListOfHabits, removeHabitCompletion } from '../store/habitsList'
-import { useStore } from '../store'
+import store from '../store/store'
 
 const { formattedDate } = useCalendar()
-const store = useStore()
 const habits = getListOfHabits()
 const knob = ref(0)
 const isSelectedDayIsToday = ref(

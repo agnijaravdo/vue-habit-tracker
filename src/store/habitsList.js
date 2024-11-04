@@ -55,6 +55,7 @@ export function editHabitName(oldHabitName, newHabitName) {
   if (!habit) return
   habit.name = newHabitName
 }
+
 export function removeHabitCompletion(habitName, completionDate) {
   const habit = habits.value.find((h) => h.name === habitName)
   if (!habit) return

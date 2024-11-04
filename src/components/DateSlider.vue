@@ -1,9 +1,8 @@
 <script setup>
 import Button from 'primevue/button'
 import useCalendar from '../store/calendar'
-import { useStore } from '../store'
+import store from '../store/store'
 
-const store = useStore()
 const { days, normalizedDisplayDate, selectDate } = useCalendar()
 </script>
 

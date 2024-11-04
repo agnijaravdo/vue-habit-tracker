@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import DatePicker from 'primevue/datepicker'
 import useCalendar from '../store/calendar'
-import { useStore } from '../store'
+import store from '../store/store'
 import DateSlider from '../components/DateSlider.vue'
 import AppHeader from '../components/AppHeader.vue'
 import HabitDrawer from '../components/HabitDrawer.vue'
@@ -10,7 +10,6 @@ import EmptyState from '../components/EmptyState.vue'
 import AppFooter from '../components/AppFooter.vue'
 import DailyHabitsList from '../components/DailyHabitsList.vue'
 
-const store = useStore()
 const { isSelectedDayAFutureDate } = useCalendar()
 const drawerVisible = ref(false)
 </script>
