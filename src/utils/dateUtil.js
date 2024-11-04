@@ -18,4 +18,18 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}`
 }
 
-export { isValidDate, getStartOfWeek, formatDate }
+function calculateWeekDays(dateDisplay, offset) {
+  const startOfWeek = getStartOfWeek(dateDisplay)
+  startOfWeek.setDate(startOfWeek.getDate() + offset * 7)
+
+  return Array.from({ length: 7 }, (_, i) => {
+    const day = new Date(startOfWeek)
+    day.setDate(startOfWeek.getDate() + i)
+    return {
+      dayOfTheWeek: day.toLocaleString('default', { weekday: 'long' }),
+      monthAndDay: day.toLocaleString('default', { day: 'numeric', month: 'short' }),
+      dayFormat: new Date(day)
+    }
+  })
+}
+export { isValidDate, formatDate, calculateWeekDays }

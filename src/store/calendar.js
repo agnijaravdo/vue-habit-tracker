@@ -1,11 +1,12 @@
-import { computed, watch } from 'vue'
+import { computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { isValidDate, getStartOfWeek, formatDate } from '../utils/dateUtil'
 import store from './store'
+import { isValidDate, formatDate, calculateWeekDays } from '../utils/dateUtil'
 
 function useCalendar() {
   const route = useRoute()
   const router = useRouter()
+  let isInternalUpdate = false
 
   const normalizedDisplayDate = computed(() => {
     const normalizedDate = new Date(store.dateDisplay)
@@ -15,73 +16,71 @@ function useCalendar() {
 
   const isSelectedDayAFutureDate = computed(() => {
     const today = new Date()
-    const selectedDate = new Date(store.dateDisplay)
     today.setHours(0, 0, 0, 0)
+    const selectedDate = new Date(store.dateDisplay)
     selectedDate.setHours(0, 0, 0, 0)
     return selectedDate > today
   })
 
   const selectDate = (date) => {
-    store.dateDisplay = date
+    store.dateDisplay = new Date(date)
     store.currentWeekOffset = 0
   }
 
-  const calculateWeekDays = (offset) => {
-    const startOfWeek = getStartOfWeek(store.dateDisplay)
-    startOfWeek.setDate(startOfWeek.getDate() + offset * 7)
-
-    return Array.from({ length: 7 }, (_, i) => {
-      const day = new Date(startOfWeek)
-      day.setDate(startOfWeek.getDate() + i)
-      return {
-        dayOfTheWeek: day.toLocaleString('default', { weekday: 'long' }),
-        monthAndDay: day.toLocaleString('default', { day: 'numeric', month: 'short' }),
-        dayFormat: new Date(day)
-      }
-    })
-  }
-
-  const days = computed(() => calculateWeekDays(store.currentWeekOffset))
+  const days = computed(() => calculateWeekDays(store.dateDisplay, store.currentWeekOffset))
   const formattedDate = computed(() => formatDate(store.dateDisplay))
 
-  let isInternalUpdate = false
+  const initializeDateBasedOnRoute = () => {
+    const initialDay = route.params.day
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
 
-  watch(
-    () => route.params.day,
-    (newDay) => {
-      if (!newDay) {
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        isInternalUpdate = true
-        store.dateDisplay = today
-        return
-      }
+    store.dateDisplay = initialDay && isValidDate(initialDay) ? new Date(initialDay) : today
+  }
 
-      if (isValidDate(newDay)) {
-        const parsedDate = new Date(newDay)
-        if (parsedDate.getTime() !== store.dateDisplay.getTime()) {
+  onMounted(initializeDateBasedOnRoute)
+
+  const watchRouteParams = () =>
+    watch(
+      () => route.params.day,
+      (newDay) => {
+        if (!newDay) {
+          const today = new Date()
+          today.setHours(0, 0, 0, 0)
           isInternalUpdate = true
-          store.dateDisplay = parsedDate
+          store.dateDisplay = today
+          return
+        }
+
+        if (isValidDate(newDay)) {
+          const parsedDate = new Date(newDay)
+          if (parsedDate.getTime() !== store.dateDisplay.getTime()) {
+            isInternalUpdate = true
+            store.dateDisplay = parsedDate
+          }
+        }
+      },
+      { immediate: true }
+    )
+
+  const watchDateDisplay = () =>
+    watch(
+      () => store.dateDisplay,
+      (newDate, oldDate) => {
+        if (isInternalUpdate) {
+          isInternalUpdate = false
+          return
+        }
+
+        if (newDate.getTime() !== oldDate.getTime()) {
+          isInternalUpdate = true
+          router.push({ name: 'day', params: { day: formatDate(newDate) } })
         }
       }
-    },
-    { immediate: true }
-  )
+    )
 
-  watch(
-    () => store.dateDisplay,
-    (newDate, oldDate) => {
-      if (isInternalUpdate) {
-        isInternalUpdate = false
-        return
-      }
-
-      if (newDate.getTime() !== oldDate.getTime()) {
-        isInternalUpdate = true
-        router.push({ name: 'day', params: { day: formatDate(newDate) } })
-      }
-    }
-  )
+  watchRouteParams()
+  watchDateDisplay()
 
   return {
     days,
