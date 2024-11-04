@@ -113,6 +113,7 @@ const saveHabit = (habit) => {
                 placeholder="Edit Your Habit"
                 class="flex-grow border border-blue-500 outline-none focus:ring-2 focus:border-blue-500 mr-2"
                 @keyup.enter="saveHabit(habit)"
+                @input="inputValid = true"
               />
               <InputGroupAddon>
                 <Button
@@ -188,6 +189,7 @@ const saveHabit = (habit) => {
             placeholder="Enter New Habit"
             class="flex-auto"
             @keyup.enter="addNewHabitToStoreAndClearInput"
+            @input="inputValid = true"
           />
           <InputGroupAddon>
             <Button icon="pi pi-face-smile" @click="toggleEmojiPicker()" severity="secondary" />
