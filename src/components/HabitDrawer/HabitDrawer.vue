@@ -14,7 +14,7 @@ import {
   addNewHabit,
   markHabitAsStopped,
   editHabitName,
-  getListOfHabits
+  habits
 } from '../../store/habitsList'
 
 const visible = ref(false)
@@ -31,6 +31,8 @@ const onDrawerClose = () => {
   showEmojiPicker.value = false
   editStates.value = {}
 }
+
+const habitsList = habits.value
 
 const toggleEmojiPicker = (habitName = null) => {
   showEmojiPicker.value = !showEmojiPicker.value
@@ -94,7 +96,7 @@ const saveHabit = (habit) => {
       leave-to-class="opacity-0 transform translate-x-8"
     >
       <li
-        v-for="habit of getListOfHabits()"
+        v-for="habit of habitsList"
         :key="habit.name"
         :class="[
           'flex justify-between items-center border-b border-gray-300 py-2',

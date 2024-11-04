@@ -5,24 +5,24 @@ import { ref, watch, watchEffect } from 'vue'
 import ConfettiExplosion from 'vue-confetti-explosion'
 import EmptyState from './EmptyState.vue'
 import useCalendar from '../store/calendar'
-import { getListOfHabits, removeHabitCompletion } from '../store/habitsList'
+import { habits, removeHabitCompletion } from '../store/habitsList'
 import store from '../store/store'
 
 const { formattedDate } = useCalendar()
-const habits = getListOfHabits()
+const habitsList = habits.value
 const knob = ref(0)
 const isSelectedDayIsToday = ref(
   store.dateDisplay.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
 )
 
 const isHabitChecked = (habit) => {
-  const habitByName = habits.find((h) => h.name === habit.name)
+  const habitByName = habitsList.find((h) => h.name === habit.name)
   const isCompleted = habitByName?.datesWhenCompleted?.includes(formattedDate.value)
   return isCompleted
 }
 
 const toggleCompletion = (habit) => {
-  const habitByName = habits.find((h) => h.name === habit.name)
+  const habitByName = habitsList.find((h) => h.name === habit.name)
   if (!habitByName?.datesWhenCompleted) {
     habitByName.datesWhenCompleted = []
   }
@@ -37,7 +37,9 @@ const toggleCompletion = (habit) => {
 const isHabitDisabled = (habit) => habit.isStopped && isSelectedDayIsToday.value
 
 const calculateKnobValue = () => {
-  const activeHabits = habits.filter((habit) => !(habit.isStopped && isSelectedDayIsToday.value))
+  const activeHabits = habitsList.filter(
+    (habit) => !(habit.isStopped && isSelectedDayIsToday.value)
+  )
   const completedActiveHabits = activeHabits.filter(isHabitChecked)
 
   if (!activeHabits.length) {
@@ -62,7 +64,7 @@ watch(
 </script>
 
 <template>
-  <div v-if="habits.length">
+  <div v-if="habitsList.length">
     <Knob v-model="knob" valueTemplate="{value}%" class="flex justify-center py-4" />
     <div
       class="fixed inset-0 flex items-center justify-center pointer-events-none"

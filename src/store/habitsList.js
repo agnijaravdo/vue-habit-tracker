@@ -12,7 +12,7 @@ function getStoredHabits() {
   }
 }
 
-const habits = ref(getStoredHabits())
+export const habits = ref(getStoredHabits())
 
 watch(
   habits,
@@ -73,8 +73,4 @@ export function markHabitAsStopped(habitName) {
 export function addNewHabit(habitName) {
   if (isHabitExist(habitName)) return
   habits.value.push({ name: habitName })
-}
-
-export function getListOfHabits() {
-  return habits.value
 }
