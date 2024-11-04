@@ -85,14 +85,24 @@ const saveHabit = (habit) => {
         <h1 class="text-2xl font-bold">Tracked Habits</h1>
       </div>
     </template>
-    <TransitionGroup name="list" tag="ul" class="w-full">
+    <TransitionGroup
+      name="list"
+      tag="ul"
+      class="w-full"
+      enter-active-class="transition-all duration-500 ease"
+      leave-active-class="transition-all duration-500 ease"
+      enter-from-class="opacity-0 transform translate-x-8"
+      enter-to-class="opacity-100 transform translate-x-0"
+      leave-from-class="opacity-100 transform translate-x-0"
+      leave-to-class="opacity-0 transform translate-x-8"
+    >
       <li
         v-for="habit of getListOfHabits()"
         :key="habit.name"
-        class="flex justify-between items-center border-b border-gray-300 py-2"
-        :style="{
-          color: habit.isStopped ? 'red' : 'inherit'
-        }"
+        :class="[
+          'flex justify-between items-center border-b border-gray-300 py-2',
+          habit.isStopped ? 'text-red-500' : 'text-inherit'
+        ]"
       >
         <div class="flex-1 flex items-center">
           <template v-if="editStates[habit.name]?.isEditing">
@@ -115,10 +125,13 @@ const saveHabit = (habit) => {
           </template>
           <template v-else>
             <span
-              class="flex-grow text-left cursor-default break-all"
-              :style="{
-                textDecoration: habit.isStopped ? 'line-through' : 'none'
-              }"
+              :class="[
+                'flex-grow',
+                'text-left',
+                'cursor-default',
+                'break-all',
+                habit.isStopped ? 'line-through' : ''
+              ]"
               >{{ habit.name }}
             </span>
           </template>
@@ -137,18 +150,16 @@ const saveHabit = (habit) => {
             v-else
             @click="saveHabit(habit)"
             title="Save new habit name"
-            severity="secondary"
+            severity="primary"
             class="p-button-text"
-            style="color: green"
           />
           <Button
             v-if="habit.isStopped"
             icon="pi pi-play"
             @click="markHabitAsStopped(habit.name)"
             title="Enable habit back"
-            severity="secondary"
+            severity="primary"
             class="p-button-text"
-            style="color: green"
           />
           <Button
             v-else
@@ -169,7 +180,7 @@ const saveHabit = (habit) => {
       </li>
     </TransitionGroup>
     <div class="mt-4 space-y-3">
-      <div style="max-width: 100%">
+      <div class="max-w-full">
         <InputGroup>
           <InputText
             v-model="newHabit"
@@ -187,13 +198,7 @@ const saveHabit = (habit) => {
         v-if="showEmojiPicker"
         @select="onSelectEmoji"
         disable-skin-tones
-        style="
-          position: absolute;
-          z-index: 1000;
-          top: 240px;
-          left: 50%;
-          transform: translateX(-50%);
-        "
+        class="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2"
       />
       <div v-if="!inputValid" class="text-red-500 text-xs">Habit already exists</div>
       <Button
@@ -206,19 +211,3 @@ const saveHabit = (habit) => {
     </div>
   </Drawer>
 </template>
-<style scoped>
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
-}
-
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-
-li {
-  list-style-type: none;
-}
-</style>
