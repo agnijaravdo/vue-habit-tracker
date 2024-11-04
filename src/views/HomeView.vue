@@ -15,8 +15,18 @@ const { isSelectedDayAFutureDate, selectDate } = useCalendar()
   <HabitDrawer v-model:visible="store.isDrawerVisible" />
   <div class="w-full max-w-7xl mx-auto px-10">
     <div class="px-4 flex justify-between mb-4">
-      <Button label="Today" severity="secondary" @click="selectDate(new Date())" />
-      <DatePicker v-model="store.dateDisplay" showIcon :showOnFocus="false" />
+      <Button
+        label="Today"
+        severity="secondary"
+        @click="selectDate(new Date())"
+        aria-label="Select today"
+      />
+      <DatePicker
+        v-model="store.dateDisplay"
+        showIcon
+        :showOnFocus="false"
+        aria-label="Select a date"
+      />
     </div>
     <DateSlider />
     <div v-if="isSelectedDayAFutureDate">
