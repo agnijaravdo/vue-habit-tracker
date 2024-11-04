@@ -63,6 +63,13 @@ export function removeHabitCompletion(habitName, completionDate) {
   habit.datesWhenCompleted = newHabits
 }
 
+export function markHabitAsStopped(habitName) {
+  const habitByName = habits.value.find((h) => h.name === habitName)
+  if (!habitByName?.isStopped) {
+    habitByName.isStopped = false
+  }
+  habitByName.isStopped = !habitByName.isStopped
+}
 export function addNewHabit(habitName) {
   if (isHabitExist(habitName)) return
   habits.value.push({ name: habitName })

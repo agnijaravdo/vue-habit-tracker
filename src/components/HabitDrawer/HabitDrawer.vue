@@ -6,13 +6,16 @@ import InputText from 'primevue/inputtext'
 import InputGroup from 'primevue/inputgroup'
 import InputGroupAddon from 'primevue/inputgroupaddon'
 import EmojiPicker from 'vue3-emoji-picker'
+import ConfirmPopup from 'primevue/confirmpopup'
+import useConfirmHandlers from './useConfirmHandlers'
+
 import {
   isHabitExist,
   addNewHabit,
-  removeHabit,
+  markHabitAsStopped,
   editHabitName,
   getListOfHabits
-} from '../store/habitsList'
+} from '../../store/habitsList'
 
 const visible = ref(false)
 const newHabit = ref('')
@@ -34,13 +37,7 @@ const toggleEmojiPicker = (habitName = null) => {
   valueToEdit.value = habitName
 }
 
-const markHabitAsStopped = (habitName) => {
-  const habitByName = getListOfHabits().find((h) => h.name === habitName)
-  if (!habitByName?.isStopped) {
-    habitByName.isStopped = false
-  }
-  habitByName.isStopped = !habitByName.isStopped
-}
+const { confirmDelete, confirmStop } = useConfirmHandlers()
 
 const addNewHabitToStoreAndClearInput = () => {
   if (newHabit.value) {
@@ -154,27 +151,31 @@ const saveHabit = (habit) => {
             severity="primary"
             class="p-button-text"
           />
-          <Button
-            v-if="habit.isStopped"
-            icon="pi pi-play"
-            @click="markHabitAsStopped(habit.name)"
-            title="Enable habit back"
-            severity="primary"
-            class="p-button-text"
-          />
-          <Button
-            v-else
-            icon="pi pi-stop"
-            @click="markHabitAsStopped(habit.name)"
-            title="Stop habit from today"
-            severity="secondary"
-            class="p-button-text"
-          />
+          <div>
+            <ConfirmPopup />
+            <Button
+              v-if="habit.isStopped"
+              icon="pi pi-play"
+              @click="markHabitAsStopped(habit.name)"
+              title="Enable habit back"
+              severity="primary"
+              class="p-button-text"
+            />
+            <Button
+              v-else
+              icon="pi pi-stop"
+              @click="confirmStop(habit.name)"
+              title="Stop habit from today"
+              severity="secondary"
+              class="p-button-text"
+            />
+          </div>
+          <ConfirmPopup />
           <Button
             icon="pi pi-trash"
-            @click="removeHabit(habit.name)"
+            @click="confirmDelete(habit.name)"
             title="Remove habit"
-            severity="secondary"
+            severity="danger"
             class="p-button-text"
           />
         </div>
