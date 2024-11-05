@@ -1,8 +1,9 @@
 import { useConfirm } from 'primevue/useconfirm'
-import { removeHabit, markHabitAsStopped } from '../../store/habitsList'
+import useHabits from '../../store/habits'
 
 function useConfirmHandlers() {
   const confirm = useConfirm()
+  const { removeHabit, markHabitAsStopped } = useHabits()
 
   const confirmDelete = (habitName) => {
     confirm.require({

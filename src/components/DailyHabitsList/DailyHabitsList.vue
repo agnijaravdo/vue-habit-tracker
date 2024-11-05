@@ -1,42 +1,19 @@
 <script setup>
 import Checkbox from 'primevue/checkbox'
 import Knob from 'primevue/knob'
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 import ConfettiExplosion from 'vue-confetti-explosion'
 import EmptyState from '../EmptyState.vue'
 import useCalendar from '../../store/calendar'
-import { habits, removeHabitCompletion } from '../../store/habitsList'
+import useHabits from '../../store/habits'
 import store from '../../store/store'
 import useHabitsProgress from './useHabitsProgress'
 
-const { formattedDate } = useCalendar()
+const { isSelectedDayIsToday } = useCalendar()
+const { toggleCompletion, isHabitChecked, isHabitDisabled, habits } = useHabits()
 const habitsList = habits.value
-const isSelectedDayIsToday = ref(
-  store.dateDisplay.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
-)
-
-const isHabitChecked = (habit) => {
-  const habitByName = habitsList.find((h) => h.name === habit.name)
-  const isCompleted = habitByName?.datesWhenCompleted?.includes(formattedDate.value)
-  return isCompleted
-}
 
 const { habitsProgress } = useHabitsProgress(habitsList, isSelectedDayIsToday, isHabitChecked)
-
-const toggleCompletion = (habit) => {
-  const habitByName = habitsList.find((h) => h.name === habit.name)
-  if (!habitByName?.datesWhenCompleted) {
-    habitByName.datesWhenCompleted = []
-  }
-
-  if (isHabitChecked(habit)) {
-    removeHabitCompletion(habitByName.name, formattedDate.value)
-  } else {
-    habitByName.datesWhenCompleted.push(formattedDate.value)
-  }
-}
-
-const isHabitDisabled = (habit) => habit.isStopped && isSelectedDayIsToday.value
 
 watch(
   () => store.dateDisplay,

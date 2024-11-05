@@ -1,4 +1,4 @@
-import { computed, watch, onMounted } from 'vue'
+import { computed, watch, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import store from './store'
 import { isValidDate, formatDate, calculateWeekDays } from '../utils/dateUtil'
@@ -6,6 +6,9 @@ import { isValidDate, formatDate, calculateWeekDays } from '../utils/dateUtil'
 function useCalendar() {
   const route = useRoute()
   const router = useRouter()
+  const isSelectedDayIsToday = ref(
+    store.dateDisplay.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+  )
   let isInternalUpdate = false
 
   const normalizedDisplayDate = computed(() => {
@@ -87,7 +90,8 @@ function useCalendar() {
     normalizedDisplayDate,
     isSelectedDayAFutureDate,
     selectDate,
-    formattedDate
+    formattedDate,
+    isSelectedDayIsToday
   }
 }
 

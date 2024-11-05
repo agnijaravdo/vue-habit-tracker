@@ -8,14 +8,7 @@ import InputGroupAddon from 'primevue/inputgroupaddon'
 import EmojiPicker from 'vue3-emoji-picker'
 import ConfirmPopup from 'primevue/confirmpopup'
 import useConfirmHandlers from './useConfirmHandlers'
-
-import {
-  isHabitExist,
-  addNewHabit,
-  markHabitAsStopped,
-  editHabitName,
-  habits
-} from '../../store/habitsList'
+import useHabits from '../../store/habits'
 
 const visible = ref(false)
 const newHabit = ref('')
@@ -32,14 +25,15 @@ const onDrawerClose = () => {
   editStates.value = {}
 }
 
+const { addNewHabit, editHabitName, markHabitAsStopped, isHabitExist, habits } = useHabits()
+const { confirmDelete, confirmStop } = useConfirmHandlers()
+
 const habitsList = habits.value
 
 const toggleEmojiPicker = (habitName = null) => {
   showEmojiPicker.value = !showEmojiPicker.value
   valueToEdit.value = habitName
 }
-
-const { confirmDelete, confirmStop } = useConfirmHandlers()
 
 const addNewHabitToStoreAndClearInput = () => {
   if (newHabit.value) {
@@ -73,7 +67,6 @@ const saveHabit = (habit) => {
   if (newName && newName !== habit.name && !isHabitExist(newName)) {
     editHabitName(habit.name, newName)
   }
-  editStates.value[habit.name].isEditing = false
 }
 </script>
 
