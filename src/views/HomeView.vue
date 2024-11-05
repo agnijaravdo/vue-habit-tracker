@@ -6,7 +6,7 @@ import store from '../store/store'
 import DateSlider from '../components/DateSlider.vue'
 import HabitDrawer from '../components/HabitDrawer/HabitDrawer.vue'
 import EmptyState from '../components/EmptyState.vue'
-import DailyHabitsList from '../components/DailyHabitsList.vue'
+import DailyHabitsList from '../components/DailyHabitsList/DailyHabitsList.vue'
 
 const { isSelectedDayAFutureDate, selectDate } = useCalendar()
 </script>

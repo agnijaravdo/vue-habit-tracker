@@ -1,16 +1,16 @@
 <script setup>
 import Checkbox from 'primevue/checkbox'
 import Knob from 'primevue/knob'
-import { ref, watch, watchEffect } from 'vue'
+import { ref, watch } from 'vue'
 import ConfettiExplosion from 'vue-confetti-explosion'
-import EmptyState from './EmptyState.vue'
-import useCalendar from '../store/calendar'
-import { habits, removeHabitCompletion } from '../store/habitsList'
-import store from '../store/store'
+import EmptyState from '../EmptyState.vue'
+import useCalendar from '../../store/calendar'
+import { habits, removeHabitCompletion } from '../../store/habitsList'
+import store from '../../store/store'
+import useHabitsProgress from './useHabitsProgress'
 
 const { formattedDate } = useCalendar()
 const habitsList = habits.value
-const knob = ref(0)
 const isSelectedDayIsToday = ref(
   store.dateDisplay.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
 )
@@ -20,6 +20,8 @@ const isHabitChecked = (habit) => {
   const isCompleted = habitByName?.datesWhenCompleted?.includes(formattedDate.value)
   return isCompleted
 }
+
+const { habitsProgress } = useHabitsProgress(habitsList, isSelectedDayIsToday, isHabitChecked)
 
 const toggleCompletion = (habit) => {
   const habitByName = habitsList.find((h) => h.name === habit.name)
@@ -36,24 +38,6 @@ const toggleCompletion = (habit) => {
 
 const isHabitDisabled = (habit) => habit.isStopped && isSelectedDayIsToday.value
 
-const calculateKnobValue = () => {
-  const activeHabits = habitsList.filter(
-    (habit) => !(habit.isStopped && isSelectedDayIsToday.value)
-  )
-  const completedActiveHabits = activeHabits.filter(isHabitChecked)
-
-  if (!activeHabits.length) {
-    knob.value = 0
-    return
-  }
-
-  knob.value = Math.round((completedActiveHabits.length / activeHabits.length) * 100)
-}
-
-watchEffect(() => {
-  calculateKnobValue()
-})
-
 watch(
   () => store.dateDisplay,
   (newDateDisplay) => {
@@ -65,10 +49,10 @@ watch(
 
 <template>
   <div v-if="habitsList.length">
-    <Knob v-model="knob" valueTemplate="{value}%" class="flex justify-center py-4" />
+    <Knob v-model="habitsProgress" valueTemplate="{value}%" class="flex justify-center py-4" />
     <div
       class="fixed inset-0 flex items-center justify-center pointer-events-none"
-      v-if="knob === 100"
+      v-if="habitsProgress === 100"
     >
       <ConfettiExplosion :stageHeight="2500" :stageWidth="5000" :duration="5000" />
     </div>
