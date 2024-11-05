@@ -3,12 +3,13 @@ import { useRoute, useRouter } from 'vue-router'
 import store from './store'
 import { isValidDate, formatDate, calculateWeekDays } from '../utils/dateUtil'
 
+const isSelectedDayIsToday = ref(
+  store.dateDisplay.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+)
+
 function useCalendar() {
   const route = useRoute()
   const router = useRouter()
-  const isSelectedDayIsToday = ref(
-    store.dateDisplay.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
-  )
   let isInternalUpdate = false
 
   const normalizedDisplayDate = computed(() => {
