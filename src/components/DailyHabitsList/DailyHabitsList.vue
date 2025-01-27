@@ -57,7 +57,7 @@ watch(
     </div>
   </div>
   <div v-else>
-    <div class="text-center text-gray-500 p-10">
+    <div class="text-center text-gray-500">
       <EmptyState
         text="Your habits list is empty. Please enter your habits by clicking 'Your habits list' button."
         iconName="pi-file-edit"
