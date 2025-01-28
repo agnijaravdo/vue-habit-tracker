@@ -26,7 +26,12 @@ watch(
 
 <template>
   <div v-if="habitsList.length">
-    <Knob v-model="habitsProgress" valueTemplate="{value}%" class="flex justify-center py-4" />
+    <Knob
+      v-model="habitsProgress"
+      valueTemplate="{value}%"
+      class="flex justify-center py-4"
+      aria-label="Habits progress bar"
+    />
     <div
       class="fixed inset-0 flex items-center justify-center pointer-events-none"
       v-if="habitsProgress === 100"
@@ -34,8 +39,8 @@ watch(
       <ConfettiExplosion :stageHeight="2500" :stageWidth="5000" :duration="5000" />
     </div>
 
-    <div class="space-y-2">
-      <div
+    <section class="space-y-2" aria-label="Habits list">
+      <form
         v-for="habit of habits"
         :key="habit.name"
         class="p-4 flex items-center border border-gray-200 rounded-md"
@@ -46,22 +51,25 @@ watch(
           :modelValue="isHabitChecked(habit)"
           @change="() => toggleCompletion(habit)"
           :disabled="isHabitDisabled(habit)"
+          :name="habit.name"
+          :id="habit.name"
         />
         <label
-          :for="habit.name"
+          :for="`${habit.name}`"
+          :id="`label-${habit.name}`"
           :class="isHabitDisabled(habit) ? 'cursor-not-allowed text-gray-500' : 'cursor-pointer'"
         >
           {{ habit.name }}
         </label>
-      </div>
-    </div>
+      </form>
+    </section>
   </div>
-  <div v-else>
+  <section v-else aria-label="Empty state for no habits">
     <div class="text-center text-gray-500">
       <EmptyState
         text="Your habits list is empty. Please enter your habits by clicking 'Your habits list' button."
         iconName="pi-file-edit"
       />
     </div>
-  </div>
+  </section>
 </template>

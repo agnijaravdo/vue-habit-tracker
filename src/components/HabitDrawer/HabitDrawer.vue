@@ -71,7 +71,13 @@ const saveHabit = (habit) => {
 </script>
 
 <template>
-  <Drawer :visible="visible" @update:visible="onDrawerClose" position="right" class="lg:!w-[25rem]">
+  <Drawer
+    :visible="visible"
+    @update:visible="onDrawerClose"
+    position="right"
+    class="lg:!w-[25rem]"
+    aria-label="Add new habit sidebar"
+  >
     <template #header>
       <div class="flex justify-between items-center p-2">
         <h1 class="text-2xl font-bold">Tracked Habits</h1>

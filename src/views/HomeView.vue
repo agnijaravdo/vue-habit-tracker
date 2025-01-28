@@ -14,7 +14,7 @@ const { isSelectedDayAFutureDate, selectDate } = useCalendar()
 <template>
   <HabitDrawer v-model:visible="store.isDrawerVisible" />
   <div class="w-full max-w-7xl mx-auto px-10">
-    <div class="px-4 flex justify-between mb-4">
+    <section class="px-4 flex justify-between mb-4" aria-label="Date selection actions buttons">
       <Button
         label="Today"
         severity="secondary"
@@ -26,17 +26,18 @@ const { isSelectedDayAFutureDate, selectDate } = useCalendar()
         showIcon
         :showOnFocus="false"
         aria-label="Select a date"
+        :name="store.dateDisplay"
       />
-    </div>
-    <DateSlider />
-    <div v-if="isSelectedDayAFutureDate">
+    </section>
+    <section aria-label="Date slider"><DateSlider /></section>
+    <section v-if="isSelectedDayAFutureDate" aria-label="Empty state for not allowed future dates">
       <EmptyState
         text="You cannot mark habits for future dates, please select a past or current date."
         iconName="pi-exclamation-circle"
       />
-    </div>
-    <div v-else>
+    </section>
+    <section v-else aria-label="Daily habits list">
       <DailyHabitsList />
-    </div>
+    </section>
   </div>
 </template>
