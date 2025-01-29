@@ -13,7 +13,10 @@ import useHabits from '../../store/habits'
 const visible = ref(false)
 const newHabit = ref('')
 const inputValid = ref(true)
-const showEmojiPicker = ref(false)
+const showEmojiPicker = ref({
+  status: false,
+  position: null
+})
 const editStates = ref({})
 const valueToEdit = ref('')
 
@@ -21,7 +24,7 @@ const emit = defineEmits(['update:visible'])
 const onDrawerClose = () => {
   emit('update:visible', false)
   inputValid.value = true
-  showEmojiPicker.value = false
+  showEmojiPicker.value = { status: false, position: null }
   editStates.value = {}
 }
 
@@ -30,8 +33,12 @@ const { confirmDelete, confirmStop } = useConfirmHandlers()
 
 const habitsList = habits.value
 
-const toggleEmojiPicker = (habitName = null) => {
-  showEmojiPicker.value = !showEmojiPicker.value
+const toggleEmojiPicker = (habitName = null, position = null) => {
+  if (showEmojiPicker.value.position !== position) {
+    showEmojiPicker.value = { status: true, position }
+  } else {
+    showEmojiPicker.value.status = !showEmojiPicker.value.status
+  }
   valueToEdit.value = habitName
 }
 
@@ -52,7 +59,7 @@ const onSelectEmoji = (emoji) => {
   } else {
     newHabit.value += emoji.i
   }
-  showEmojiPicker.value = false
+  showEmojiPicker.value.status = false
 }
 
 const toggleEditing = (habit) => {
@@ -104,23 +111,31 @@ const saveHabit = (habit) => {
       >
         <div class="flex-1 flex items-center">
           <template v-if="editStates[habit.name]?.isEditing">
-            <InputGroup>
-              <InputText
-                v-model="editStates[habit.name].newName"
-                id="edit-habit"
-                placeholder="Edit Your Habit"
-                class="flex-grow border border-blue-500 outline-none focus:ring-2 focus:border-blue-500 mr-2"
-                @keyup.enter="saveHabit(habit)"
-                @input="inputValid = true"
-              />
-              <InputGroupAddon>
-                <Button
-                  icon="pi pi-face-smile"
-                  @click="toggleEmojiPicker(habit.name)"
-                  severity="secondary"
+            <div class="relative">
+              <InputGroup>
+                <InputText
+                  v-model="editStates[habit.name].newName"
+                  id="edit-habit"
+                  placeholder="Edit Your Habit"
+                  class="flex-grow border border-blue-500 outline-none focus:ring-2 focus:border-blue-500 mr-2"
+                  @keyup.enter="saveHabit(habit)"
+                  @input="inputValid = true"
                 />
-              </InputGroupAddon>
-            </InputGroup>
+                <InputGroupAddon>
+                  <Button
+                    icon="pi pi-face-smile"
+                    @click="toggleEmojiPicker(habit.name, 'edit')"
+                    severity="secondary"
+                  />
+                </InputGroupAddon>
+              </InputGroup>
+              <EmojiPicker
+                v-if="showEmojiPicker.status && showEmojiPicker.position === 'edit'"
+                @select="onSelectEmoji"
+                disable-skin-tones
+                class="absolute z-10 top-full left-0 mt-2"
+              />
+            </div>
           </template>
           <template v-else>
             <span
@@ -183,7 +198,7 @@ const saveHabit = (habit) => {
       </li>
     </TransitionGroup>
     <div class="mt-4 space-y-3">
-      <div class="max-w-full">
+      <div class="max-w-full relative">
         <InputGroup>
           <InputText
             v-model="newHabit"
@@ -194,16 +209,20 @@ const saveHabit = (habit) => {
             @input="inputValid = true"
           />
           <InputGroupAddon>
-            <Button icon="pi pi-face-smile" @click="toggleEmojiPicker()" severity="secondary" />
+            <Button
+              icon="pi pi-face-smile"
+              @click="toggleEmojiPicker(null, 'add')"
+              severity="secondary"
+            />
           </InputGroupAddon>
         </InputGroup>
+        <EmojiPicker
+          v-if="showEmojiPicker.status && showEmojiPicker.position === 'add'"
+          @select="onSelectEmoji"
+          disable-skin-tones
+          class="absolute z-10 top-full right-0 mt-2"
+        />
       </div>
-      <EmojiPicker
-        v-if="showEmojiPicker"
-        @select="onSelectEmoji"
-        disable-skin-tones
-        class="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2"
-      />
       <div v-if="!inputValid" class="text-red-500 text-xs">Habit already exists</div>
       <Button
         icon="pi pi-plus"
