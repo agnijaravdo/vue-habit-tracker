@@ -5,7 +5,7 @@ defineEmits(['toggle-drawer'])
 </script>
 
 <template>
-  <header class="flex justify-between items-center p-4 bg-gray-100 border-b">
+  <header class="flex justify-between items-center p-4 bg-gray-100 border-b sticky top-0 z-10">
     <nav>
       <RouterLink to="/">
         <div class="flex items-center space-x-2">
