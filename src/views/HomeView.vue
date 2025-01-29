@@ -14,7 +14,7 @@ const { isSelectedDayAFutureDate, selectDate } = useCalendar()
 <template>
   <HabitDrawer v-model:visible="store.isDrawerVisible" />
   <div class="w-full max-w-7xl mx-auto px-10">
-    <section class="px-4 flex justify-between mb-4" aria-label="Date selection actions buttons">
+    <section class="flex justify-between mb-4 gap-2" aria-label="Date selection actions buttons">
       <Button
         label="Today"
         severity="secondary"
