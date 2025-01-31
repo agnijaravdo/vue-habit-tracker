@@ -2,10 +2,10 @@
 import { RouterView } from 'vue-router'
 import { computed } from 'vue'
 import Message from 'primevue/message'
-import MainFooter from './components/MainFooter.vue'
-import MainHeader from './components/MainHeader.vue'
-import store from './store/store'
-import { errorCurrent } from './store/error'
+import store from '@store/store'
+import { errorCurrent } from '@store/error'
+import MainFooter from '@components/MainFooter.vue'
+import MainHeader from '@components/MainHeader.vue'
 
 const errorMessage = computed(() => (errorCurrent.value ? errorCurrent.value.message : ''))
 </script>

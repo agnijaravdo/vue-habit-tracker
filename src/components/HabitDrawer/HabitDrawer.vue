@@ -7,9 +7,9 @@ import InputGroup from 'primevue/inputgroup'
 import InputGroupAddon from 'primevue/inputgroupaddon'
 import EmojiPicker from 'vue3-emoji-picker'
 import ConfirmPopup from 'primevue/confirmpopup'
+import useHabits from '@store/habits'
+import { setError } from '@store/error'
 import useConfirmHandlers from './useConfirmHandlers'
-import useHabits from '../../store/habits'
-import { setError } from '../../store/error'
 
 const visible = ref(false)
 const newHabit = ref('')

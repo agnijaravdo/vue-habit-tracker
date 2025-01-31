@@ -12,5 +12,17 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest'
+  },
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [
+          ['@', './src'],
+          ['@store', './src/store'],
+          ['@components', './src/components']
+        ],
+        extensions: ['.js', '.ts', '.vue']
+      }
+    }
   }
 }

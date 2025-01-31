@@ -1,6 +1,6 @@
 <script setup>
 import Button from 'primevue/button'
-import { errorCurrent, setError } from '../store/error'
+import { errorCurrent, setError } from '@store/error'
 
 defineEmits(['toggle-drawer'])
 </script>

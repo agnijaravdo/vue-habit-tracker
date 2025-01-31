@@ -1,12 +1,12 @@
 <script setup>
 import DatePicker from 'primevue/datepicker'
 import Button from 'primevue/button'
-import useCalendar from '../store/calendar'
-import store from '../store/store'
-import DateSlider from '../components/DateSlider.vue'
-import HabitDrawer from '../components/HabitDrawer/HabitDrawer.vue'
-import EmptyState from '../components/EmptyState.vue'
-import DailyHabitsList from '../components/DailyHabitsList/DailyHabitsList.vue'
+import useCalendar from '@store/calendar'
+import store from '@store/store'
+import DateSlider from '@components/DateSlider.vue'
+import HabitDrawer from '@components/HabitDrawer/HabitDrawer.vue'
+import EmptyState from '@components/EmptyState.vue'
+import DailyHabitsList from '@components/DailyHabitsList/DailyHabitsList.vue'
 
 const { isSelectedDayAFutureDate, selectDate } = useCalendar()
 </script>

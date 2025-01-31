@@ -1,5 +1,5 @@
 import { useConfirm } from 'primevue/useconfirm'
-import useHabits from '../../store/habits'
+import useHabits from '@store/habits'
 
 function useConfirmHandlers() {
   const confirm = useConfirm()

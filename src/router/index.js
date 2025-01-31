@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { setError } from '@store/error'
 import HomeView from '../views/HomeView.vue'
 import { isValidDate } from '../utils/dateUtil'
-import { setError } from '../store/error'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
