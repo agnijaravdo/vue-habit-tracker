@@ -9,6 +9,7 @@ import EmojiPicker from 'vue3-emoji-picker'
 import ConfirmPopup from 'primevue/confirmpopup'
 import useConfirmHandlers from './useConfirmHandlers'
 import useHabits from '../../store/habits'
+import { setError } from '../../store/error'
 
 const visible = ref(false)
 const newHabit = ref('')
@@ -84,6 +85,7 @@ const saveHabit = (habit) => {
     position="right"
     class="lg:!w-[25rem]"
     aria-label="Add new habit sidebar"
+    @click="setError(null)"
   >
     <template #header>
       <div class="flex justify-between items-center p-2">
