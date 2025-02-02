@@ -1,7 +1,7 @@
 <script setup>
 import Checkbox from 'primevue/checkbox'
 import Knob from 'primevue/knob'
-import { watch } from 'vue'
+import { watch, computed } from 'vue'
 import ConfettiExplosion from 'vue-confetti-explosion'
 import useCalendar from '@store/calendar'
 import useHabits from '@store/habits'
@@ -11,9 +11,18 @@ import useHabitsProgress from './useHabitsProgress'
 
 const { isSelectedDayIsToday } = useCalendar()
 const { toggleCompletion, isHabitChecked, isHabitDisabled, habits } = useHabits()
-const habitsList = habits.value
 
-const { habitsProgress } = useHabitsProgress(habitsList, isSelectedDayIsToday, isHabitChecked)
+const filteredHabits = computed(() => {
+  const dateObject = new Date(store.dateDisplay)
+  const utcDate = new Date(
+    Date.UTC(dateObject.getFullYear(), dateObject.getMonth(), dateObject.getDate())
+  )
+  const selectedDate = utcDate.toISOString()
+
+  return habits.value.filter((habit) => habit.creationDate <= selectedDate)
+})
+
+const { habitsProgress } = useHabitsProgress(filteredHabits, isSelectedDayIsToday, isHabitChecked)
 
 watch(
   () => store.dateDisplay,
@@ -25,7 +34,7 @@ watch(
 </script>
 
 <template>
-  <div v-if="habitsList.length">
+  <div v-if="filteredHabits.length">
     <Knob
       v-model="habitsProgress"
       valueTemplate="{value}%"
@@ -41,7 +50,7 @@ watch(
 
     <section class="space-y-2" aria-label="Habits list">
       <form
-        v-for="habit of habits"
+        v-for="habit of filteredHabits"
         :key="habit.name"
         class="p-4 flex items-center border border-gray-200 rounded-md"
       >

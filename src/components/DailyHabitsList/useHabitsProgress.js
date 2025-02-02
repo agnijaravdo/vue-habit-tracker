@@ -4,7 +4,9 @@ function useHabitsProgress(habits, isSelectedDayIsToday, isHabitChecked) {
   const habitsProgress = ref(0)
 
   const calculateDailyHabitsProgressValue = () => {
-    const activeHabits = habits.filter((habit) => !(habit.isStopped && isSelectedDayIsToday.value))
+    const activeHabits = habits.value.filter(
+      (habit) => !(habit.isStopped && isSelectedDayIsToday.value)
+    )
     const completedActiveHabits = activeHabits.filter(isHabitChecked)
 
     if (!activeHabits.length) {

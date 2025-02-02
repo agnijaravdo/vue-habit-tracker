@@ -75,9 +75,18 @@ function useHabits() {
     habitByName.isStopped = !habitByName.isStopped
   }
 
+  function addHabitCreationDate(habit) {
+    const habitByName = habits.value.find((h) => h.name === habit.name)
+    if (!habitByName.creationDate) {
+      const today = new Date().toISOString().split('T')[0]
+      habitByName.creationDate = today
+    }
+  }
+
   function addNewHabit(habitName) {
     if (isHabitExist(habitName)) return
     habits.value.push({ name: habitName })
+    addHabitCreationDate(habits.value[habits.value.length - 1])
   }
 
   const isHabitDisabled = (habit) => habit.isStopped && isSelectedDayIsToday.value
