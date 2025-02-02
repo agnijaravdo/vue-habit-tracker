@@ -26,7 +26,6 @@ const { isSelectedDayAFutureDate, selectDate } = useCalendar()
         showIcon
         :showOnFocus="false"
         aria-label="Select a date"
-        :name="store.dateDisplay"
       />
     </section>
     <section aria-label="Date slider"><DateSlider /></section>
