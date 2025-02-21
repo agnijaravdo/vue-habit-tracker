@@ -87,10 +87,10 @@ const saveHabit = ({ habit, newName }: { habit: { name: string }; newName: strin
 <template>
   <Drawer
     :visible="visible"
-    @update:visible="onDrawerClose"
     position="right"
     class="lg:!w-[25rem]"
     aria-label="Add new habit sidebar"
+    @update:visible="onDrawerClose"
     @click="setError(null)"
   >
     <template #header>
@@ -130,8 +130,8 @@ const saveHabit = ({ habit, newName }: { habit: { name: string }; newName: strin
       <div class="max-w-full relative">
         <InputGroup>
           <InputText
-            v-model="newHabit"
             id="new-habit"
+            v-model="newHabit"
             placeholder="Enter New Habit"
             class="flex-auto"
             @keyup.enter="addNewHabitToStoreAndClearInput"
@@ -140,16 +140,16 @@ const saveHabit = ({ habit, newName }: { habit: { name: string }; newName: strin
           <InputGroupAddon>
             <Button
               icon="pi pi-face-smile"
-              @click="toggleEmojiPicker('', 'add')"
               severity="secondary"
+              @click="toggleEmojiPicker('', 'add')"
             />
           </InputGroupAddon>
         </InputGroup>
         <EmojiPicker
           v-if="showEmojiPicker.status && showEmojiPicker.position === 'add'"
-          @select="onSelectEmoji"
           disable-skin-tones
           class="absolute z-10 top-full right-0 mt-2"
+          @select="onSelectEmoji"
         />
       </div>
       <div v-if="!inputValid" class="text-red-500 text-xs">Habit already exists or is invalid</div>
@@ -157,8 +157,8 @@ const saveHabit = ({ habit, newName }: { habit: { name: string }; newName: strin
         icon="pi pi-plus"
         label="Add new habit"
         severity="success"
-        @click="addNewHabitToStoreAndClearInput"
         class="w-full"
+        @click="addNewHabitToStoreAndClearInput"
       />
     </div>
   </Drawer>

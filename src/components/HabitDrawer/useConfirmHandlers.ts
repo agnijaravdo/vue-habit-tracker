@@ -1,9 +1,9 @@
-import { useConfirm } from 'primevue/useconfirm';
-import useHabits from '@store/habits';
+import { useConfirm } from 'primevue/useconfirm'
+import useHabits from '@store/habits'
 
 function useConfirmHandlers() {
-  const confirm = useConfirm();
-  const { removeHabit, markHabitAsStopped } = useHabits();
+  const confirm = useConfirm()
+  const { removeHabit, markHabitAsStopped } = useHabits()
 
   const confirmDelete = (habitName: string) => {
     confirm.require({
@@ -11,18 +11,18 @@ function useConfirmHandlers() {
       icon: 'pi pi-info-circle',
       acceptProps: {
         label: 'Delete',
-        severity: 'danger',
+        severity: 'danger'
       },
       rejectProps: {
         label: 'Cancel',
         severity: 'secondary',
-        outlined: true,
+        outlined: true
       },
       accept: () => {
-        removeHabit(habitName);
-      },
-    });
-  };
+        removeHabit(habitName)
+      }
+    })
+  }
 
   const confirmStop = (habitName: string) => {
     confirm.require({
@@ -30,23 +30,23 @@ function useConfirmHandlers() {
       icon: 'pi pi-info-circle',
       acceptProps: {
         label: 'Stop the habit',
-        severity: 'danger',
+        severity: 'danger'
       },
       rejectProps: {
         label: 'Cancel',
         severity: 'secondary',
-        outlined: true,
+        outlined: true
       },
       accept: () => {
-        markHabitAsStopped(habitName);
-      },
-    });
-  };
+        markHabitAsStopped(habitName)
+      }
+    })
+  }
 
   return {
     confirmDelete,
-    confirmStop,
-  };
+    confirmStop
+  }
 }
 
-export default useConfirmHandlers;
+export default useConfirmHandlers

@@ -8,15 +8,17 @@
     "build": "vite build",
     "preview": "vite preview",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx --fix --ignore-path .gitignore",
+    "lint": "eslint . --fix",
     "format": "prettier --write src/",
-    "lint:style": "npx stylelint \"**/*.(s?css|vue)\""
+    "lint:style": "npx stylelint \"**/*.(s?css|vue)\"",
+    "test": "vitest"
   },
   "dependencies": {
     "@primevue/themes": "^4.1.0",
     "@types/node": "^22.13.4",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vueuse/core": "^11.1.0",
+    "eslint": "^8.57.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.5",
     "typescript": "^5.5.4",
@@ -29,12 +31,13 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
+    "@typescript-eslint/eslint-plugin": "^8.24.1",
+    "@typescript-eslint/parser": "^8.24.1",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^14.4.0",
     "autoprefixer": "^10.4.20",
-    "eslint": "9.10",
     "eslint-import-resolver-alias": "^1.1.2",
-    "eslint-plugin-vue": "^9.23.0",
+    "eslint-plugin-vue": "^9.32.0",
     "postcss": "^8.4.47",
     "postcss-html": "^1.7.0",
     "prettier": "^3.2.5",
@@ -42,6 +45,9 @@
     "stylelint-config-standard": "^36.0.1",
     "stylelint-config-standard-vue": "^1.0.0",
     "tailwindcss": "^3.4.13",
-    "vite-plugin-vue-devtools": "^7.3.1"
+    "vite-plugin-vue-devtools": "^7.3.1",
+    "vitest": "^3.0.6",
+    "vue-eslint-parser": "^9.4.3",
+    "vue-tsc": "^2.2.2"
   }
 }

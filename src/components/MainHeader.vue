@@ -8,18 +8,10 @@ defineEmits(['toggle-drawer'])
 <template>
   <header class="flex justify-between items-center p-4 bg-gray-100 border-b sticky top-0 z-10">
     <nav>
-      <RouterLink
-        to="/"
-        @click="setError(null)"
-      >
+      <RouterLink to="/" @click="setError(null)">
         <div class="flex items-center space-x-2">
-          <h1 class="text-2xl font-bold cursor-pointer">
-            Habit Hack
-          </h1>
-          <i
-            class="pi pi-calendar-times text-emeraldGreen"
-            style="font-size: 1.5rem"
-          />
+          <h1 class="text-2xl font-bold cursor-pointer">Habit Hack</h1>
+          <i class="pi pi-calendar-times text-emeraldGreen" style="font-size: 1.5rem" />
         </div>
       </RouterLink>
     </nav>

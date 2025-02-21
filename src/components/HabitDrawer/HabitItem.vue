@@ -53,22 +53,22 @@ const onEmojiSelect = (emoji: { i: string }) => {
         <div class="relative">
           <InputGroup>
             <InputText
-              v-model="newName"
               id="edit-habit"
+              v-model="newName"
               placeholder="Edit Your Habit"
               class="flex-grow border border-blue-500 outline-none focus:ring-2 focus:border-blue-500 mr-2"
               @keyup.enter="saveHabit"
               @input="$emit('update:inputValid', true)"
             />
             <InputGroupAddon>
-              <Button icon="pi pi-face-smile" @click="toggleEmojiPicker" severity="secondary" />
+              <Button icon="pi pi-face-smile" severity="secondary" @click="toggleEmojiPicker" />
             </InputGroupAddon>
           </InputGroup>
           <EmojiPicker
             v-if="showEmojiPicker.status && showEmojiPicker.position === 'edit'"
-            @select="onEmojiSelect"
             disable-skin-tones
             class="absolute z-10 top-full left-0 mt-2"
+            @select="onEmojiSelect"
           />
         </div>
       </template>
@@ -88,47 +88,47 @@ const onEmojiSelect = (emoji: { i: string }) => {
     </div>
     <div class="flex items-center justify-end space-x-2">
       <Button
-        icon="pi pi-pencil"
         v-if="!isEditing"
-        @click="toggleEditing"
+        icon="pi pi-pencil"
         title="Edit habit name"
         severity="secondary"
         class="p-button-text"
+        @click="toggleEditing"
       />
       <Button
-        icon="pi pi-check"
         v-else
-        @click="saveHabit"
+        icon="pi pi-check"
         title="Save new habit name"
         severity="primary"
         class="p-button-text"
+        @click="saveHabit"
       />
       <div>
         <ConfirmPopup />
         <Button
           v-if="habit.isStopped"
           icon="pi pi-play"
-          @click="$emit('markHabitAsStopped', habit.name)"
           title="Enable habit back"
           severity="primary"
           class="p-button-text"
+          @click="$emit('markHabitAsStopped', habit.name)"
         />
         <Button
           v-else
           icon="pi pi-stop"
-          @click="$emit('confirmStop', habit.name)"
           title="Stop habit from today"
           severity="secondary"
           class="p-button-text"
+          @click="$emit('confirmStop', habit.name)"
         />
       </div>
       <ConfirmPopup />
       <Button
         icon="pi pi-trash"
-        @click="$emit('confirmDelete', habit.name)"
         title="Remove habit"
         severity="danger"
         class="p-button-text"
+        @click="$emit('confirmDelete', habit.name)"
       />
     </div>
   </li>

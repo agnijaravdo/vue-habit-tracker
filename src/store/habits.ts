@@ -16,6 +16,7 @@ function getStoredHabits(): Habit[] {
     const habitsStored = localStorage.getItem(HABITS_STORAGE_KEY)
     return habitsStored ? JSON.parse(habitsStored) : []
   } catch (e) {
+    console.error(e)
     return []
   }
 }
@@ -31,6 +32,7 @@ function useHabits() {
       try {
         localStorage.setItem(HABITS_STORAGE_KEY, JSON.stringify(updatedHabits))
       } catch (error) {
+        console.error(error)
         setError(new Error('Could not store your habit. You might need to refresh the page'))
       }
     },

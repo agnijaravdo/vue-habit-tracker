@@ -3,7 +3,7 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
 import { definePreset } from '@primevue/themes'
-// @ts-ignore
+// @ts-expect-error: Aura module has no default export but it's a valid import
 import Aura from '@primevue/themes/aura'
 import ConfirmationService from 'primevue/confirmationservice'
 import App from './App.vue'

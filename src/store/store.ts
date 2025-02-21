@@ -1,9 +1,9 @@
-import { reactive } from 'vue';
+import { reactive } from 'vue'
 
 const store = reactive({
   currentWeekOffset: 0,
   dateDisplay: new Date(),
-  isDrawerVisible: false,
-});
+  isDrawerVisible: false
+})
 
-export default store;
+export default store
