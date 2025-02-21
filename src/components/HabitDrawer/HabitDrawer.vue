@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { Button, InputText, InputGroup, InputGroupAddon, Drawer } from 'primevue'
 import EmojiPicker from 'vue3-emoji-picker'
@@ -7,21 +7,33 @@ import { setError } from '@store/error'
 import useConfirmHandlers from './useConfirmHandlers'
 import HabitItem from './HabitItem.vue'
 
+type EditState = {
+  isEditing: boolean
+  newName: string
+}
+
+type EditStates = {
+  [key: string]: EditState
+}
+
+type ShowEmojiPicker = {
+  status: boolean
+  position: string
+}
+
 const visible = ref(false)
 const newHabit = ref('')
 const inputValid = ref(true)
-const showEmojiPicker = ref({
-  status: false,
-  position: null
-})
-const editStates = ref({})
+const editStates = ref<EditStates>({})
+const showEmojiPicker = ref<ShowEmojiPicker>({ status: false, position: '' })
+
 const valueToEdit = ref('')
 
 const emit = defineEmits(['update:visible'])
 const onDrawerClose = () => {
   emit('update:visible', false)
   inputValid.value = true
-  showEmojiPicker.value = { status: false, position: null }
+  showEmojiPicker.value = { status: false, position: '' }
   editStates.value = {}
 }
 
@@ -30,7 +42,7 @@ const { confirmDelete, confirmStop } = useConfirmHandlers()
 
 const habitsList = habits.value
 
-const toggleEmojiPicker = (habitName = null, position = null) => {
+const toggleEmojiPicker = (habitName = '', position = '') => {
   if (showEmojiPicker.value.position !== position) {
     showEmojiPicker.value = { status: true, position }
   } else {
@@ -50,7 +62,7 @@ const addNewHabitToStoreAndClearInput = () => {
   }
 }
 
-const onSelectEmoji = (emoji) => {
+const onSelectEmoji = (emoji: { i: string }) => {
   if (valueToEdit.value) {
     editStates.value[valueToEdit.value].newName += emoji.i
   } else {
@@ -59,14 +71,13 @@ const onSelectEmoji = (emoji) => {
   showEmojiPicker.value.status = false
 }
 
-const toggleEditing = (habit) => {
+const toggleEditing = (habit: { name: string }) => {
   if (!editStates.value[habit.name]) {
     editStates.value[habit.name] = { isEditing: false, newName: habit.name }
   }
   editStates.value[habit.name].isEditing = !editStates.value[habit.name].isEditing
 }
-
-const saveHabit = ({ habit, newName }) => {
+const saveHabit = ({ habit, newName }: { habit: { name: string }; newName: string }) => {
   if (newName && newName !== habit.name && !isHabitExist(newName)) {
     editHabitName(habit.name, newName)
   }
@@ -129,7 +140,7 @@ const saveHabit = ({ habit, newName }) => {
           <InputGroupAddon>
             <Button
               icon="pi pi-face-smile"
-              @click="toggleEmojiPicker(null, 'add')"
+              @click="toggleEmojiPicker('', 'add')"
               severity="secondary"
             />
           </InputGroupAddon>

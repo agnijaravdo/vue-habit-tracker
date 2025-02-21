@@ -15,7 +15,7 @@ const router = createRouter({
       path: '/day/:day',
       name: 'day',
       component: HomeView,
-      beforeEnter: (to, from, next) => {
+      beforeEnter: (to, _from, next) => {
         if (isValidDate(to.params.day)) {
           next()
         } else {
@@ -29,7 +29,7 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       component: HomeView,
-      beforeEnter: (to, from, next) => {
+      beforeEnter: (_to, _from, next) => {
         setError(new Error('The page you are looking for does not exist.'))
         next()
       }

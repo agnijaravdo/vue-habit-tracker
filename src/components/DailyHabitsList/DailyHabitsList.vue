@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Checkbox from 'primevue/checkbox'
 import Knob from 'primevue/knob'
 import { watch, computed } from 'vue'
@@ -19,7 +19,7 @@ const filteredHabits = computed(() => {
   )
   const selectedDate = utcDate.toISOString()
 
-  return habits.value.filter((habit) => habit.creationDate <= selectedDate)
+  return habits.value.filter((habit) => habit.creationDate && habit.creationDate <= selectedDate)
 })
 
 const { habitsProgress } = useHabitsProgress(filteredHabits, isSelectedDayIsToday, isHabitChecked)
@@ -37,15 +37,15 @@ watch(
   <div v-if="filteredHabits.length">
     <Knob
       v-model="habitsProgress"
-      valueTemplate="{value}%"
+      value-template="{value}%"
       class="flex justify-center py-4"
       aria-label="Habits progress bar"
     />
     <div
-      class="fixed inset-0 flex items-center justify-center pointer-events-none"
       v-if="habitsProgress === 100"
+      class="fixed inset-0 flex items-center justify-center pointer-events-none"
     >
-      <ConfettiExplosion :stageHeight="2500" :stageWidth="5000" :duration="5000" />
+      <ConfettiExplosion :stage-height="2500" :stage-width="5000" :duration="5000" />
     </div>
 
     <section class="space-y-2" aria-label="Habits list">
@@ -55,17 +55,17 @@ watch(
         class="p-4 flex items-center border border-gray-200 rounded-md"
       >
         <Checkbox
+          :id="habit.name"
           :binary="true"
           class="mr-2"
-          :modelValue="isHabitChecked(habit)"
-          @change="() => toggleCompletion(habit)"
+          :model-value="isHabitChecked(habit)"
           :disabled="isHabitDisabled(habit)"
           :name="habit.name"
-          :id="habit.name"
+          @change="() => toggleCompletion(habit)"
         />
         <label
-          :for="`${habit.name}`"
           :id="`label-${habit.name}`"
+          :for="`${habit.name}`"
           :class="isHabitDisabled(habit) ? 'cursor-not-allowed text-gray-500' : 'cursor-pointer'"
         >
           {{ habit.name }}
@@ -77,7 +77,7 @@ watch(
     <div class="text-center text-gray-500">
       <EmptyState
         text="Your habits list is empty. Please enter your habits by clicking 'Your habits list' button."
-        iconName="pi-file-edit"
+        icon-name="pi-file-edit"
       />
     </div>
   </section>

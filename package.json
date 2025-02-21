@@ -7,15 +7,21 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
     "lint:style": "npx stylelint \"**/*.(s?css|vue)\""
   },
   "dependencies": {
     "@primevue/themes": "^4.1.0",
+    "@types/node": "^22.13.4",
+    "@vitejs/plugin-vue": "^5.0.5",
     "@vueuse/core": "^11.1.0",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.5",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.1",
+    "vite-plugin-vue-devtools": "^7.3.1",
     "vue": "^3.4.29",
     "vue-confetti-explosion": "^1.0.2",
     "vue-router": "^4.3.3",
@@ -23,11 +29,10 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
-    "@vitejs/plugin-vue": "^5.0.5",
-    "@vue/eslint-config-airbnb": "^8.0.0",
     "@vue/eslint-config-prettier": "^9.0.0",
+    "@vue/eslint-config-typescript": "^14.4.0",
     "autoprefixer": "^10.4.20",
-    "eslint": "^8.57.0",
+    "eslint": "9.10",
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-vue": "^9.23.0",
     "postcss": "^8.4.47",
@@ -37,7 +42,6 @@
     "stylelint-config-standard": "^36.0.1",
     "stylelint-config-standard-vue": "^1.0.0",
     "tailwindcss": "^3.4.13",
-    "vite": "^5.3.1",
     "vite-plugin-vue-devtools": "^7.3.1"
   }
 }

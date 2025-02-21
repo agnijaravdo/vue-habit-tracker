@@ -1,7 +1,5 @@
-<script setup>
-import { defineProps } from 'vue'
-
-const { text, iconName } = defineProps(['text', 'iconName'])
+<script setup lang="ts">
+const { text, iconName } = defineProps<{ text: string; iconName: string }>()
 </script>
 
 <template>

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import DatePicker from 'primevue/datepicker'
 import Button from 'primevue/button'
 import useCalendar from '@store/calendar'
@@ -18,8 +18,8 @@ const { isSelectedDayAFutureDate, selectDate } = useCalendar()
       <Button
         label="Today"
         severity="secondary"
-        @click="selectDate(new Date())"
         aria-label="Select today"
+        @click="selectDate(new Date())"
       />
       <DatePicker
         v-model="store.dateDisplay"
@@ -28,7 +28,9 @@ const { isSelectedDayAFutureDate, selectDate } = useCalendar()
         aria-label="Select a date"
       />
     </section>
-    <section aria-label="Date slider"><DateSlider /></section>
+    <section aria-label="Date slider">
+      <DateSlider />
+    </section>
     <section v-if="isSelectedDayAFutureDate" aria-label="Empty state for not allowed future dates">
       <EmptyState
         text="You cannot mark habits for future dates, please select a past or current date."

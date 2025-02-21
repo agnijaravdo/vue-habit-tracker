@@ -2,6 +2,8 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
+import { definePreset } from '@primevue/themes'
+// @ts-ignore
 import Aura from '@primevue/themes/aura'
 import ConfirmationService from 'primevue/confirmationservice'
 import App from './App.vue'
@@ -14,7 +16,7 @@ app
   .use(ConfirmationService)
   .use(PrimeVue, {
     theme: {
-      preset: Aura
+      preset: definePreset(Aura, {})
     }
   })
 

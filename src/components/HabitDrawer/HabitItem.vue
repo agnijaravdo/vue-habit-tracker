@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { Button, InputText, InputGroup, InputGroupAddon, ConfirmPopup } from 'primevue'
 import EmojiPicker from 'vue3-emoji-picker'
@@ -35,7 +35,7 @@ const toggleEmojiPicker = () => {
   emit('toggleEmojiPicker', habit.name, 'edit')
 }
 
-const onEmojiSelect = (emoji) => {
+const onEmojiSelect = (emoji: { i: string }) => {
   newName.value += emoji.i
   emit('onSelectEmoji', emoji)
 }

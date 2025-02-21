@@ -26,7 +26,7 @@ function useCalendar() {
     return selectedDate > today
   })
 
-  const selectDate = (date) => {
+  const selectDate = (date: Date) => {
     store.dateDisplay = new Date(date)
     store.currentWeekOffset = 0
   }
@@ -36,10 +36,12 @@ function useCalendar() {
 
   const initializeDateBasedOnRoute = () => {
     const initialDay = route.params.day
+    console.log('initialDay', initialDay)
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
-    store.dateDisplay = initialDay && isValidDate(initialDay) ? new Date(initialDay) : today
+    const dateString = Array.isArray(initialDay) ? initialDay[0] : initialDay
+    store.dateDisplay = initialDay && isValidDate(initialDay) ? new Date(dateString) : today
   }
 
   onMounted(initializeDateBasedOnRoute)
@@ -57,7 +59,8 @@ function useCalendar() {
         }
 
         if (isValidDate(newDay)) {
-          const parsedDate = new Date(newDay)
+          const dateString = Array.isArray(newDay) ? newDay[0] : newDay
+          const parsedDate = new Date(dateString)
           if (parsedDate.getTime() !== store.dateDisplay.getTime()) {
             isInternalUpdate = true
             store.dateDisplay = parsedDate
