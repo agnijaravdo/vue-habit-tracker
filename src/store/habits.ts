@@ -75,9 +75,6 @@ function useHabits() {
   function markHabitAsStopped(habitName: string) {
     const habitByName = habits.value.find((h) => h.name === habitName)
     if (habitByName) {
-      if (!habitByName.isStopped) {
-        habitByName.isStopped = false
-      }
       habitByName.isStopped = !habitByName.isStopped
     }
   }
