@@ -93,6 +93,7 @@ const onEmojiSelect = (emoji: { i: string }) => {
         title="Edit habit name"
         severity="secondary"
         class="p-button-text"
+        data-testid="edit_habit"
         @click="toggleEditing"
       />
       <Button
@@ -101,6 +102,7 @@ const onEmojiSelect = (emoji: { i: string }) => {
         title="Save new habit name"
         severity="primary"
         class="p-button-text"
+        data-testid="save_new_habit_name"
         @click="saveHabit"
       />
       <div>
@@ -119,6 +121,7 @@ const onEmojiSelect = (emoji: { i: string }) => {
           title="Stop habit from today"
           severity="secondary"
           class="p-button-text"
+          data-testid="stop_habit"
           @click="$emit('confirmStop', habit.name)"
         />
       </div>
@@ -128,6 +131,7 @@ const onEmojiSelect = (emoji: { i: string }) => {
         title="Remove habit"
         severity="danger"
         class="p-button-text"
+        data-testid="delete_habit"
         @click="$emit('confirmDelete', habit.name)"
       />
     </div>

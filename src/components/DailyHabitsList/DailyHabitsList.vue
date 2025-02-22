@@ -53,6 +53,7 @@ watch(
         v-for="habit of filteredHabits"
         :key="habit.name"
         class="p-4 flex items-center border border-gray-200 rounded-md"
+        data-testid="main_habits_list_item"
       >
         <Checkbox
           :id="habit.name"

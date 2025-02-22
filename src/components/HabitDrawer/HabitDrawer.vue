@@ -95,7 +95,7 @@ const saveHabit = ({ habit, newName }: { habit: { name: string }; newName: strin
   >
     <template #header>
       <div class="flex justify-between items-center p-2">
-        <h1 class="text-2xl font-bold">Tracked Habits</h1>
+        <h1 class="text-2xl font-bold" data-testid="tracked_habits">Tracked Habits</h1>
       </div>
     </template>
     <TransitionGroup
@@ -113,6 +113,7 @@ const saveHabit = ({ habit, newName }: { habit: { name: string }; newName: strin
         v-for="habit of habitsList"
         :key="habit.name"
         :habit="habit"
+        data-testid="habit_item"
         :showEmojiPicker="showEmojiPicker"
         :isEditing="editStates[habit.name]?.isEditing"
         :newName="editStates[habit.name]?.newName"

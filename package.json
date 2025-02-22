@@ -11,7 +11,11 @@
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
     "lint:style": "npx stylelint \"**/*.(s?css|vue)\"",
-    "test": "vitest"
+    "test": "vitest",
+    "test:e2e:ui-mode": "npx playwright test --ui -c playwright.config.ts",
+    "test:e2e": "npx playwright test -c playwright.config.ts",
+    "test:e2e:chromium": "npx playwright test --headed -c playwright.config.ts --project chromium",
+    "report": "npx playwright show-report"
   },
   "dependencies": {
     "@primevue/themes": "^4.1.0",
@@ -30,6 +34,7 @@
     "vue3-emoji-picker": "^1.1.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.50.1",
     "@rushstack/eslint-patch": "^1.8.0",
     "@typescript-eslint/eslint-plugin": "^8.24.1",
     "@typescript-eslint/parser": "^8.24.1",
