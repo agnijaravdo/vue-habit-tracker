@@ -12,5 +12,9 @@ export default defineConfig({
       '@store': path.resolve(__dirname, './src/store'),
       '@components': path.resolve(__dirname, './src/components')
     }
+  },
+  test: {
+    exclude: ['e2e/**', 'node_modules/**'],
+    environment: 'jsdom'
   }
 })

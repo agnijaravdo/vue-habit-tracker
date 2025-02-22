@@ -6,7 +6,7 @@ import pluginTypeScript from '@typescript-eslint/eslint-plugin'
 export default [
   {
     files: ['**/*.{vue,ts,js}'],
-    ignores: ['node_modules', 'dist/**'],
+    ignores: ['node_modules', 'dist/**', 'playwright-report/**'],
     languageOptions: {
       parser: vueParser,
       parserOptions: {
